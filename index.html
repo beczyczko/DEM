@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>DEM</title>
+</head>
+<body>
+<canvas id="myCanvas" width="1000" height="500"
+        style="border:1px solid #c3c3c3;">
+    Your browser does not support the canvas element.
+</canvas>
+
+<script>
+    var canvas = document.getElementById("myCanvas");
+    var ctx = canvas.getContext("2d");
+
+    function drawParticle(particle) {
+        ctx.fillStyle = "#FF0000";
+        ctx.beginPath();
+        ctx.arc(particle.x + 500, particle.y + 250, particle.r, 0, 2 * Math.PI);
+        ctx.stroke();
+    }
+
+    let actualStep = 0;
+    let timeStates;
+
+    function drawStep(stepNo) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        const timeState = timeStates[stepNo];
+        const particles = timeState.particles;
+        for (let j = 0; j < particles.length; j++) {
+            drawParticle(particles[j]);
+        }
+
+        actualStep = stepNo + 1;
+        if (actualStep < timeStates.length) {
+            setTimeout(() => {
+                drawStep(actualStep);
+            }, 33);
+        }
+    }
+
+    fetch('https://localhost:5001/api/Simulation')
+        .then(response => response.json())
+        .then(response => {
+            console.log(response);
+            timeStates = response.timeStates;
+
+            drawStep(actualStep);
+        });
+</script>
+</body>
+</html>
