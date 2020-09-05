@@ -4,67 +4,59 @@ namespace DEM.Engine
 {
     public struct Particle
     {
-        public Particle(float x, float y, float r, Velocity v)
+        public Particle(float x, float y, float r, float m, Vector2d v)
         {
             X = x;
             Y = y;
             R = r;
+            M = m;
             V = v;
         }
 
         public float X { get; set; }
         public float Y { get; set; }
         public float R { get; set; }
-        public Velocity V { get; set; }
+        public float M { get; set; }
+        public Vector2d V { get; set; }
 
-        public Particle NextStep(Particle[] interactionParticles)
+        public Vector2d RestoringForce(Particle[] interactionParticles)
         {
-            var totalVelocityChange = new Velocity();
+            var totalForce = new Vector2d();
 
             foreach (var interactionParticle in interactionParticles)
             {
                 var interaction = Interaction(interactionParticle);
-                totalVelocityChange.Add(interaction);
+                totalForce = totalForce.Add(interaction);
             }
 
-            var newVelocity = V;
-            newVelocity.Add(totalVelocityChange);
-
-            var nextStepParticle = new Particle(X, Y, R, newVelocity);
-            nextStepParticle.Move();
-            return nextStepParticle;
+            return totalForce;
         }
 
-        private void Move()
+        public void Move()
         {
-            X += V.X;
-            Y += V.Y;
+            X += V.X * World.TimeStep;
+            Y += V.Y * World.TimeStep;
         }
 
         //todo db define interaction function between 2 elements that can be easly replaced
-        public Velocity Interaction(Particle par2)
+        public Vector2d Interaction(Particle par2)
         {
             if (par2.Equals(this) || !CollisionHappened(par2))
             {
-                return new Velocity();
+                return new Vector2d();
             }
             else
             {
-                var deltaVx = par2.V.X - V.X; // [m/s]
-                var deltaVy = par2.V.Y - V.Y; // [m/s]
+                const float springFactor = -1F; // [N/m] //todo db how to handle different particles
 
-
-                //float distance1 = sqrt(deltaX1*deltaX1 + deltaY1*deltaY1);
                 var deltaX = par2.X - X; // [m]
                 var deltaY = par2.Y - Y; // [m]
                 var distance = (float)Math.Sqrt(deltaX * deltaX + deltaY * deltaY); // [m]
-
-                var topOfFraction = deltaVx * deltaX + deltaVy * deltaY * World.ParticlesBounceFactor; //top of magic formula - need better documentation // m/s * m = m^2/s
-
-                var bounceForce = topOfFraction / (distance * distance); //m^2/s * 1/m^2 = 1/s
-                return new Velocity
+                var deformation = (R + par2.R - distance) / 2; // [m]
+                var bounceForce = springFactor * deformation / distance; // N/m * m/m = N/m
+                return new Vector2d
                 {
-                    X = bounceForce * deltaX, //1/s * m = m/s
+                    X = bounceForce * deltaX, // N/m * m = N
                     Y = bounceForce * deltaY
                 };
             }
@@ -72,21 +64,20 @@ namespace DEM.Engine
 
         private bool CollisionHappened(Particle particleHit)
         {
-            // Velocity Diff
-            // var deltaVx = particleHit.V.X - V.X;
-            // var deltaVy = particleHit.V.Y - V.Y;
-
-            // roznica polozenia w chwili zderzenia
             var deltaX = particleHit.X - X;
             var deltaY = particleHit.Y - Y;
 
-            //float distance1 = sqrt(deltaX1*deltaX1 + deltaY1*deltaY1);
             var distance = Math.Sqrt(deltaX * deltaX + deltaY * deltaY);
             var radiusSum = R + particleHit.R;
 
-            var wasHit = distance < 0.9 * radiusSum;
-
+            var wasHit = distance < radiusSum;
             return wasHit;
+        }
+
+        public void ApplyForce(Vector2d force)
+        {
+            var dV = new Vector2d(force.X * World.TimeStep / M, force.Y * World.TimeStep / M);
+            V = V.Add(dV);
         }
     }
 }

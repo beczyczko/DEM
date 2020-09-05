@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 
 namespace DEM.Engine
@@ -15,15 +16,13 @@ namespace DEM.Engine
 
         public static float Gravity = 0.0981F;
         public float Time = 0;
-        public Particle[] Particles { get; set; }
-        public List<TimeState> TimeStates { get; set; } = new List<TimeState>();
+        public List<TimeState> TimeStates { get; }
 
-        public World(Particle[] particles)
+        public World(Particle[] particlesInitState)
         {
-            Particles = particles;
             TimeStates = new List<TimeState>
             {
-                new TimeState(Time, Particles)
+                new TimeState(Time, particlesInitState)
             };
         }
 
@@ -34,12 +33,45 @@ namespace DEM.Engine
             var currentTimeState = TimeStates.Last();
             var currentParticles = currentTimeState.Particles;
 
-            var particlesNewState = new Particle[currentParticles.Length];
-            for (int i = 0; i < currentParticles.Length; i++)
-            {
-                particlesNewState[i] = currentParticles[i].NextStep(currentParticles);
-            }
+            var particlesNewState = currentParticles.ToArray(); //copy
+
+            var restoringForces = RestoringForceCalc(currentParticles);
+            //todo db Restoring force - infinite rigid line <--> particle
+            //todo db Global Gravity force - particles
+            //todo db Cohesion - particles <--> particle
+            //todo db Cohesion - rigid line <--> particle
+
+            ApplyForcesToParticles(ref particlesNewState, restoringForces);
+            MoveParticles(ref particlesNewState);
+
             TimeStates.Add(new TimeState(Time, particlesNewState));
+        }
+
+        private void ApplyForcesToParticles(ref Particle[] particles, Vector2d[] forces)
+        {
+            for (int i = 0; i < particles.Length; i++)
+            {
+                particles[i].ApplyForce(forces[i]);
+            }
+        }
+
+        public Vector2d[] RestoringForceCalc(Particle[] particles)
+        {
+            var forces = new Vector2d[particles.Length];
+            for (var i = 0; i < particles.Length; i++)
+            {
+                forces[i] = particles[i].RestoringForce(particles);
+            }
+
+            return forces;
+        }
+
+        private void MoveParticles(ref Particle[] particles)
+        {
+            for (var i = 0; i < particles.Length; i++)
+            {
+                particles[i].Move();
+            }
         }
 
         public void RunWorld(float time)
