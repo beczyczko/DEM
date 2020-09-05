@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using DEM.Engine;
+using DEM.Engine.Elements;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DEM.Controllers

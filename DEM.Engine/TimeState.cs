@@ -1,4 +1,6 @@
-﻿namespace DEM.Engine
+﻿using DEM.Engine.Elements;
+
+namespace DEM.Engine
 {
     public struct TimeState
     {

@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using DEM.Engine;
+using DEM.Engine.Elements;
 using Newtonsoft.Json;
 using Xunit;
 
@@ -18,7 +19,7 @@ namespace DEM.Tests.Engine
                     random.Next(-80, 80),
                     5,
                     1,
-                    new Velocity(NextFloat(random), NextFloat(random))))
+                    new Vector2d(NextFloat(random), NextFloat(random))))
                 .ToArray();
             var world = new World(particles);
             world.RunWorld(2);
