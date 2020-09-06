@@ -2,6 +2,6 @@
 {
     public interface ICollidable
     {
-        Vector2d CalculateCollisionForce(ICollidable element);
+        Vector2d CalculateCollisionForce(ICollidable[] interactionElements);
     }
 }

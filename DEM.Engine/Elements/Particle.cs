@@ -17,28 +17,24 @@
         public float M { get; set; }
         public Vector2d V { get; set; }
 
-        public Vector2d RestoringForce(Particle[] interactionParticles)
-        {
-            var totalForce = new Vector2d();
-
-            foreach (var interactionParticle in interactionParticles)
-            {
-                var interaction = CalculateCollisionForce(interactionParticle);
-                totalForce = totalForce.Add(interaction);
-            }
-
-            return totalForce;
-        }
-
         public void Move()
         {
             Position = new Point2d(Position.X + V.X * World.TimeStep, Position.Y + V.Y * World.TimeStep);
         }
 
-        public Vector2d CalculateCollisionForce(ICollidable element)
+        public Vector2d CalculateCollisionForce(ICollidable[] interactionElements)
         {
+            //todo db the same method is in RigidWall
             //todo db probably would be good idea to move this method from particle struct
-            return CollisionSolver.CollisionSolver.CalculateCollisionForce(this, element);
+            var totalForce = new Vector2d();
+
+            foreach (var element in interactionElements)
+            {
+                var interaction = CollisionSolver.CollisionSolver.CalculateCollisionForce(this, element);
+                totalForce = totalForce.Add(interaction);
+            }
+
+            return totalForce;
         }
 
         public void ApplyForce(Vector2d force)

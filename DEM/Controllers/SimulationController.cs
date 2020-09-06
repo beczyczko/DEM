@@ -23,7 +23,15 @@ namespace DEM.Controllers
                     1,
                     new Vector2d(NextFloat(random), NextFloat(random))))
                 .ToArray();
-            var world = new World(particles);
+
+            var rigidWalls = new RigidWall[]
+            {
+                new RigidWall(new Point2d(-200, -200), new Point2d(250, -200)), //top
+                new RigidWall(new Point2d(250, -200), new Point2d(150, 200)), //right
+                new RigidWall(new Point2d(150, 200), new Point2d(-200, 200)), //bottom
+                new RigidWall(new Point2d(-200, 200), new Point2d(-200, -200)), //left
+            };
+            var world = new World(particles, rigidWalls);
             world.RunWorld(1000);
 
             return Ok(world);
@@ -37,7 +45,7 @@ namespace DEM.Controllers
                 new Particle(new Point2d(-30, 0), 10, 1, new Vector2d(1, 0)),
                 new Particle(new Point2d(30, 0), 10, 1, new Vector2d(-1, 0)),
             };
-            var world = new World(particles);
+            var world = new World(particles, new RigidWall[0]);
             world.RunWorld(1000);
 
             return Ok(world);

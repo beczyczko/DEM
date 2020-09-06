@@ -21,6 +21,14 @@
         ctx.stroke();
     }
 
+    function drawRigidWall(rigidWall) {
+        ctx.fillStyle = "#FF0000";
+        ctx.beginPath();
+        ctx.moveTo(rigidWall.p1.x + 500, rigidWall.p1.y + 250);
+        ctx.lineTo(rigidWall.p2.x + 500, rigidWall.p2.y + 250);
+        ctx.stroke();
+    }
+
     let actualStep = 0;
     let timeStates;
 
@@ -30,6 +38,11 @@
         const particles = timeState.particles;
         for (let j = 0; j < particles.length; j++) {
             drawParticle(particles[j]);
+        }
+
+        const rigidWalls = timeState.rigidWalls;
+        for (let j = 0; j < rigidWalls.length; j++) {
+            drawRigidWall(rigidWalls[j]);
         }
 
         actualStep = stepNo + 1;

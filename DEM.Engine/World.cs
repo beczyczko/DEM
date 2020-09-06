@@ -18,11 +18,11 @@ namespace DEM.Engine
         public float Time = 0;
         public List<TimeState> TimeStates { get; }
 
-        public World(Particle[] particlesInitState)
+        public World(Particle[] particlesInitState, RigidWall[] rigidWalls)
         {
             TimeStates = new List<TimeState>
             {
-                new TimeState(Time, particlesInitState)
+                new TimeState(Time, particlesInitState, rigidWalls)
             };
         }
 
@@ -35,7 +35,7 @@ namespace DEM.Engine
 
             var particlesNewState = currentParticles.ToArray(); //copy
 
-            var restoringForces = RestoringForceCalc(currentParticles);
+            var restoringForces = RestoringForceCalc(currentParticles, currentTimeState.RigidWalls);
             //todo db Restoring force - infinite rigid line <--> particle
             //todo db Global Gravity force - particles
             //todo db Cohesion - particles <--> particle
@@ -44,7 +44,8 @@ namespace DEM.Engine
             ApplyForcesToParticles(ref particlesNewState, restoringForces);
             MoveParticles(ref particlesNewState);
 
-            TimeStates.Add(new TimeState(Time, particlesNewState));
+            var rigidWallsCopy = currentTimeState.RigidWalls.ToArray();
+            TimeStates.Add(new TimeState(Time, particlesNewState, rigidWallsCopy));
         }
 
         private void ApplyForcesToParticles(ref Particle[] particles, Vector2d[] forces)
@@ -55,12 +56,17 @@ namespace DEM.Engine
             }
         }
 
-        public Vector2d[] RestoringForceCalc(Particle[] particles)
+        public Vector2d[] RestoringForceCalc(Particle[] particles, RigidWall[] rigidWalls)
         {
+            var collidableElements = particles
+                .Select(p => p as ICollidable)
+                .Concat(rigidWalls.Select(w => w as ICollidable))
+                .ToArray();
+
             var forces = new Vector2d[particles.Length];
             for (var i = 0; i < particles.Length; i++)
             {
-                forces[i] = particles[i].RestoringForce(particles);
+                forces[i] = particles[i].CalculateCollisionForce(collidableElements);
             }
 
             return forces;
