@@ -24,7 +24,7 @@ namespace DEM.Tests.Engine
                     1,
                     new Vector2d(NextFloat(random), NextFloat(random))))
                 .ToArray();
-            var world = new World(particles);
+            var world = new World(particles, new RigidWall[0]);
             world.RunWorld(2);
             var worldAsJson = JsonConvert.SerializeObject(world);
         }
