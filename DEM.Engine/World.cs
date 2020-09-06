@@ -6,29 +6,25 @@ namespace DEM.Engine
 {
     public class World
     {
-        public static float LeftBorderY = 100;
-        public static float RightBorderY = -50;
-        public static float BottomBorderX = 100;
-
-        public static float ParticlesBounceFactor = 0.95F;
+        public static float ParticlesBounceFactor = 0.95F; //todo db use it
 
         public static float TimeStep = 1; //todo db use it
 
-        public static float Gravity = 0.0981F;
-        public float Time = 0;
+        public static float Gravity = 0.0981F; // todo db define gravity
+        public float ActualTime = 0;
         public List<TimeState> TimeStates { get; }
 
         public World(Particle[] particlesInitState, RigidWall[] rigidWalls)
         {
             TimeStates = new List<TimeState>
             {
-                new TimeState(Time, particlesInitState, rigidWalls)
+                new TimeState(ActualTime, particlesInitState, rigidWalls)
             };
         }
 
         public void ProcessNextStep()
         {
-            Time++;
+            ActualTime++;
 
             var currentTimeState = TimeStates.Last();
             var currentParticles = currentTimeState.Particles;
@@ -36,7 +32,6 @@ namespace DEM.Engine
             var particlesNewState = currentParticles.ToArray(); //copy
 
             var restoringForces = RestoringForceCalc(currentParticles, currentTimeState.RigidWalls);
-            //todo db Restoring force - infinite rigid line <--> particle
             //todo db Global Gravity force - particles
             //todo db Cohesion - particles <--> particle
             //todo db Cohesion - rigid line <--> particle
@@ -45,7 +40,7 @@ namespace DEM.Engine
             MoveParticles(ref particlesNewState);
 
             var rigidWallsCopy = currentTimeState.RigidWalls.ToArray();
-            TimeStates.Add(new TimeState(Time, particlesNewState, rigidWallsCopy));
+            TimeStates.Add(new TimeState(ActualTime, particlesNewState, rigidWallsCopy));
         }
 
         private void ApplyForcesToParticles(ref Particle[] particles, Vector2d[] forces)
@@ -82,7 +77,7 @@ namespace DEM.Engine
 
         public void RunWorld(float time)
         {
-            while (Time < time)
+            while (ActualTime < time)
             {
                 ProcessNextStep();
             }
