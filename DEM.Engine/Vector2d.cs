@@ -2,6 +2,8 @@
 {
     public struct Vector2d
     {
+        public static Vector2d Zero => new Vector2d(0, 0);
+
         public Vector2d(float x, float y)
         {
             X = x;

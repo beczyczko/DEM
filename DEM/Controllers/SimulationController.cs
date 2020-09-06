@@ -16,8 +16,9 @@ namespace DEM.Controllers
             var random = new Random();
             var particles = Enumerable.Range(0, 30)
                 .Select(i => new Particle(
-                    random.Next(-100, 100),
-                    random.Next(-100, 100),
+                    new Point2d(
+                        random.Next(-100, 100),
+                        random.Next(-100, 100)),
                     10,
                     1,
                     new Vector2d(NextFloat(random), NextFloat(random))))
@@ -31,11 +32,10 @@ namespace DEM.Controllers
         [HttpGet]
         public async Task<ActionResult<World>> TwoParticlesCollision()
         {
-            var random = new Random();
-            var particles = new Particle[]
+            var particles = new[]
             {
-                new Particle(-30, 0, 10, 1, new Vector2d(1, 0)),
-                new Particle(30, 0, 10, 1, new Vector2d(-1, 0)),
+                new Particle(new Point2d(-30, 0), 10, 1, new Vector2d(1, 0)),
+                new Particle(new Point2d(30, 0), 10, 1, new Vector2d(-1, 0)),
             };
             var world = new World(particles);
             world.RunWorld(1000);

@@ -13,13 +13,11 @@ namespace DEM.Engine.CollisionSolver
             }
             else
             {
-                const float springFactor = -1F; // [N/m] //todo db how to handle different particles
-
-                var deltaX = element2.X - element1.X; // [m]
-                var deltaY = element2.Y - element1.Y; // [m]
+                var deltaX = element2.Position.X - element1.Position.X; // [m]
+                var deltaY = element2.Position.Y - element1.Position.Y; // [m]
                 var distance = (float)Math.Sqrt(deltaX * deltaX + deltaY * deltaY); // [m]
                 var deformation = (element1.R + element2.R - distance) / 2; // [m]
-                var bounceForce = springFactor * deformation / distance; // N/m * m/m = N/m
+                var bounceForce = Particle.SpringFactor * deformation / distance; // N/m * m/m = N/m
                 return new Vector2d
                 {
                     X = bounceForce * deltaX, // N/m * m = N
@@ -30,8 +28,8 @@ namespace DEM.Engine.CollisionSolver
 
         public override bool CollisionHappened(Particle element1, Particle element2)
         {
-            var deltaX = element2.X - element1.X;
-            var deltaY = element2.Y - element1.Y;
+            var deltaX = element2.Position.X - element1.Position.X;
+            var deltaY = element2.Position.Y - element1.Position.Y;
 
             var distance = Math.Sqrt(deltaX * deltaX + deltaY * deltaY);
             var radiusSum = element1.R + element2.R;

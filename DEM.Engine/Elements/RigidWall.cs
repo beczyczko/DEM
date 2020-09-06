@@ -3,14 +3,14 @@
     //todo db should there be base class 'Element' or smth?
     public readonly struct RigidWall : ICollidable
     {
-        public RigidWall(Point2d begin, Point2d end)
+        public RigidWall(Point2d p1, Point2d p2)
         {
-            Begin = begin;
-            End = end;
+            P1 = p1;
+            P2 = p2;
         }
 
-        public Point2d Begin { get; }
-        public Point2d End { get; }
+        public Point2d P1 { get; }
+        public Point2d P2 { get; }
 
         public Vector2d CalculateCollisionForce(ICollidable element)
         {

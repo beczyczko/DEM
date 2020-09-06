@@ -17,7 +17,7 @@
     function drawParticle(particle) {
         ctx.fillStyle = "#FF0000";
         ctx.beginPath();
-        ctx.arc(particle.x + 500, particle.y + 250, particle.r, 0, 2 * Math.PI);
+        ctx.arc(particle.position.x + 500, particle.position.y + 250, particle.r, 0, 2 * Math.PI);
         ctx.stroke();
     }
 
