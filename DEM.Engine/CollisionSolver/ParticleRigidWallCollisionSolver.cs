@@ -16,7 +16,13 @@ namespace DEM.Engine.CollisionSolver
                 var deltaX = closestPointOfWallToParticle.X - element1.Position.X; // [m]
                 var deltaY = closestPointOfWallToParticle.Y - element1.Position.Y; // [m]
 
+                if (distanceFromParticleToWall == 0)
+                {
+                    return Vector2d.Zero;
+                }
+
                 var deformation = element1.R - distanceFromParticleToWall; // [m]
+
                 var bounceForce = Particle.SpringFactor * deformation / distanceFromParticleToWall; // N/m * m/m = N/m
                 return new Vector2d
                 {

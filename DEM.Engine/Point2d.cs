@@ -4,6 +4,8 @@ namespace DEM.Engine
 {
     public struct Point2d
     {
+        public static Point2d Zero = new Point2d(0, 0);
+
         public Point2d(float x, float y)
         {
             X = x;
