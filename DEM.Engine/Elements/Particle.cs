@@ -24,17 +24,7 @@
 
         public Vector2d CalculateCollisionForce(ICollidable[] interactionElements)
         {
-            //todo db the same method is in RigidWall
-            //todo db probably would be good idea to move this method from particle struct
-            var totalForce = new Vector2d();
-
-            foreach (var element in interactionElements)
-            {
-                var interaction = CollisionSolver.CollisionSolver.CalculateCollisionForce(this, element);
-                totalForce = totalForce.Add(interaction);
-            }
-
-            return totalForce;
+            return CollisionSolver.CollisionSolver.CalculateCollisionForce(this, interactionElements);
         }
 
         public void ApplyForce(Vector2d force)

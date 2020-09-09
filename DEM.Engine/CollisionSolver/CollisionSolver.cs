@@ -32,5 +32,18 @@ namespace DEM.Engine.CollisionSolver
 
             return collisionForce;
         }
+
+        public static Vector2d CalculateCollisionForce(ICollidable element1, ICollidable[] interactionElements)
+        {
+            var totalForce = new Vector2d();
+
+            foreach (var element in interactionElements)
+            {
+                var interaction = CalculateCollisionForce(element1, element);
+                totalForce = totalForce.Add(interaction);
+            }
+
+            return totalForce;
+        }
     }
 }
