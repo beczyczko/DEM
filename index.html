@@ -5,14 +5,30 @@
     <title>DEM</title>
 </head>
 <body>
+Simulation id <input type="text" id="simulation-id" accept=".dem"/>
+<button id="run-simulation-btn" style="margin-left: 40px;">Run simulation</button>
 <canvas id="myCanvas" width="1000" height="500"
         style="border:1px solid #c3c3c3;">
     Your browser does not support the canvas element.
 </canvas>
 
 <script>
-    var canvas = document.getElementById("myCanvas");
-    var ctx = canvas.getContext("2d");
+    const runSimButton = document.getElementById('run-simulation-btn');
+    runSimButton.addEventListener('click', () => {
+        const simulationIdElement = document.getElementById('simulation-id');
+        fetch(`https://localhost:5001/api/Simulation/${simulationIdElement.value}`)
+            .then(response => response.json())
+            .then(response => {
+                console.log(response);
+                timeStates = response;
+                drawStep(actualStep);
+            });
+    });
+</script>
+
+<script>
+    const canvas = document.getElementById("myCanvas");
+    const ctx = canvas.getContext("2d");
 
     function drawParticle(particle) {
         ctx.fillStyle = "#FF0000";
@@ -52,15 +68,6 @@
             }, 33);
         }
     }
-
-    fetch('https://localhost:5001/api/Simulation/RandomWorld')
-        .then(response => response.json())
-        .then(response => {
-            console.log(response);
-            timeStates = response;
-
-            drawStep(actualStep);
-        });
 </script>
 </body>
 </html>

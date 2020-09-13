@@ -5,21 +5,27 @@ using System.Threading.Tasks;
 using DEM.Common.Dispatchers;
 using DEM.Engine;
 using DEM.Engine.Elements;
+using DEM.Engine.Persistence;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DEM.Controllers
 {
-    [Route("api/[controller]/[action]")]
+    [Route("api/[controller]")]
     public class SimulationController : BaseController
     {
         private readonly IWorldSimulator _worldSimulator;
+        private readonly IFileWorldStateLoader _fileWorldStateLoader;
 
-        public SimulationController(IDispatcher dispatcher, IWorldSimulator worldSimulator) : base(dispatcher)
+        public SimulationController(
+            IDispatcher dispatcher,
+            IWorldSimulator worldSimulator,
+            IFileWorldStateLoader fileWorldStateLoader) : base(dispatcher)
         {
             _worldSimulator = worldSimulator;
+            _fileWorldStateLoader = fileWorldStateLoader;
         }
 
-        [HttpGet]
+        [HttpGet("random")]
         public async Task<ActionResult<IEnumerable<World>>> RandomWorld()
         {
             var random = new Random();
@@ -46,7 +52,7 @@ namespace DEM.Controllers
             return Ok(_worldSimulator.WorldTimeSteps);
         }
 
-        [HttpGet]
+        [HttpGet("[action]")]
         public async Task<ActionResult<IEnumerable<World>>> TwoParticlesCollision()
         {
             var particles = new[]
@@ -58,6 +64,13 @@ namespace DEM.Controllers
             await _worldSimulator.RunWorldAsync(initialStateWorld, 1000, 1);
 
             return Ok(_worldSimulator.WorldTimeSteps);
+        }
+
+        [HttpGet("{simulationId}")]
+        public ActionResult<IEnumerable<World>> BySimulationId(string simulationId)
+        {
+            var snapshots = _fileWorldStateLoader.All(simulationId);
+            return Ok(snapshots);
         }
 
         private static float NextFloat(Random random)
