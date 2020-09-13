@@ -17,9 +17,9 @@
         public float M { get; set; }
         public Vector2d V { get; set; }
 
-        public void Move()
+        public void Move(float timeStep)
         {
-            Position = new Point2d(Position.X + V.X * World.TimeStep, Position.Y + V.Y * World.TimeStep);
+            Position = new Point2d(Position.X + V.X * timeStep, Position.Y + V.Y * timeStep);
         }
 
         public Vector2d CalculateCollisionForce(ICollidable[] interactionElements)
@@ -27,9 +27,9 @@
             return CollisionSolver.CollisionSolver.CalculateCollisionForce(this, interactionElements);
         }
 
-        public void ApplyForce(Vector2d force)
+        public void ApplyForce(Vector2d force, float timeStep)
         {
-            var dV = new Vector2d(force.X * World.TimeStep / M, force.Y * World.TimeStep / M);
+            var dV = new Vector2d(force.X * timeStep / M, force.Y * timeStep / M);
             V = V.Add(dV);
         }
     }

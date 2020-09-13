@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using DEM.Engine.Elements;
 
 namespace DEM.Engine
@@ -8,46 +7,44 @@ namespace DEM.Engine
     {
         public static float ParticlesBounceFactor = 0.95F; //todo db use it
 
-        public static float TimeStep = 1; //todo db use it
-
         public static float Gravity = 0.0981F; // todo db define gravity
-        public float ActualTime = 0;
-        public List<TimeState> TimeStates { get; }
 
-        public World(Particle[] particlesInitState, RigidWall[] rigidWalls)
+        public float CurrentTime { get; }
+        public Particle[] Particles { get; set; }
+        public RigidWall[] RigidWalls { get; }
+
+        public World(Particle[] particlesInitState, RigidWall[] rigidWalls, float currentTime)
         {
-            TimeStates = new List<TimeState>
-            {
-                new TimeState(ActualTime, particlesInitState, rigidWalls)
-            };
+            CurrentTime = currentTime;
+            Particles = particlesInitState;
+            RigidWalls = rigidWalls;
         }
 
-        public void ProcessNextStep()
+        public World ProcessNextStep(float timeStep) //todo db make sure timeStep affects every physic aspect
         {
-            ActualTime++;
-
-            var currentTimeState = TimeStates.Last();
-            var currentParticles = currentTimeState.Particles;
+            var currentParticles = Particles;
 
             var particlesNewState = currentParticles.ToArray(); //copy
 
-            var restoringForces = RestoringForceCalc(currentParticles, currentTimeState.RigidWalls);
+            var restoringForces = RestoringForceCalc(currentParticles, RigidWalls);
             //todo db Global Gravity force - particles
             //todo db Cohesion - particles <--> particle
             //todo db Cohesion - rigid line <--> particle
 
-            ApplyForcesToParticles(ref particlesNewState, restoringForces);
-            MoveParticles(ref particlesNewState);
+            ApplyForcesToParticles(ref particlesNewState, restoringForces, timeStep);
+            MoveParticles(ref particlesNewState, timeStep);
 
-            var rigidWallsCopy = currentTimeState.RigidWalls.ToArray();
-            TimeStates.Add(new TimeState(ActualTime, particlesNewState, rigidWallsCopy));
+            var rigidWallsNewState = RigidWalls.ToArray(); //copy
+
+            var worldSnapshot = new World(particlesNewState, rigidWallsNewState, CurrentTime + timeStep);
+            return worldSnapshot;
         }
 
-        private void ApplyForcesToParticles(ref Particle[] particles, Vector2d[] forces)
+        private void ApplyForcesToParticles(ref Particle[] particles, Vector2d[] forces, float timeStep)
         {
             for (int i = 0; i < particles.Length; i++)
             {
-                particles[i].ApplyForce(forces[i]);
+                particles[i].ApplyForce(forces[i], timeStep);
             }
         }
 
@@ -67,19 +64,11 @@ namespace DEM.Engine
             return forces;
         }
 
-        private void MoveParticles(ref Particle[] particles)
+        private void MoveParticles(ref Particle[] particles, float timeStep)
         {
             for (var i = 0; i < particles.Length; i++)
             {
-                particles[i].Move();
-            }
-        }
-
-        public void RunWorld(float time)
-        {
-            while (ActualTime < time)
-            {
-                ProcessNextStep();
+                particles[i].Move(timeStep);
             }
         }
     }
