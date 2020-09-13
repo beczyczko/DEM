@@ -1,3 +1,11 @@
+using System.Reflection;
+using Autofac;
+using DEM.Common.Dispatchers;
+using DEM.Common.MediatR;
+using DEM.Common.Mongo;
+using DEM.Common.Mvc;
+using DEM.Engine;
+using JetBrains.Annotations;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,15 +19,43 @@ namespace DEM
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvcCore();
+            services.AddCustomMvc();
 
             services.AddOpenApiDocument(configure =>
             {
                 configure.DocumentName = "v1";
                 configure.Title = "Sticker Board API";
             });
-         
+
             services.AddControllers();
+            services.AddOptions();
+        }
+
+        [UsedImplicitly]
+        public void ConfigureContainer(ContainerBuilder builder)
+        {
+            builder.RegisterAssemblyTypes(Assembly.GetEntryAssembly()).AsImplementedInterfaces();
+            builder.RegisterAssemblyTypes(typeof(Dispatcher).Assembly).AsImplementedInterfaces();
+            builder.RegisterAssemblyTypes(typeof(World).Assembly).AsImplementedInterfaces();
+
+            builder.AddDispatchers();
+
+            AddMediatR(builder);
+            builder.AddMongo();
+        }
+
+        private void AddMediatR(ContainerBuilder builder)
+        {
+            builder.AddMediatR();
+
+            // how to register mediatr handlers
+            // https://github.com/jbogard/MediatR/tree/master/samples/MediatR.Examples.PublishStrategies
+            // finally register our custom code (individually, or via assembly scanning)
+            // - requests & handlers as transient, i.e. InstancePerDependency()
+            // - pre/post-processors as scoped/per-request, i.e. InstancePerLifetimeScope()
+            // - behaviors as transient, i.e. InstancePerDependency()
+            // builder.RegisterAssemblyTypes(typeof(Startup).GetTypeInfo().Assembly).AsImplementedInterfaces(); // via assembly scan
+            // builder.RegisterType<MyHandler>().AsImplementedInterfaces().InstancePerDependency();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

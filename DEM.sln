@@ -3,11 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30320.27
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DEM", "DEM\DEM.csproj", "{F4926EF3-BEF4-41E7-A79E-F6C78E8B407E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DEM", "DEM\DEM.csproj", "{F4926EF3-BEF4-41E7-A79E-F6C78E8B407E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DEM.Engine", "DEM.Engine\DEM.Engine.csproj", "{7DADEC62-A9E0-4610-A948-6D45B16B120A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DEM.Engine", "DEM.Engine\DEM.Engine.csproj", "{7DADEC62-A9E0-4610-A948-6D45B16B120A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DEM.Tests.Engine", "DEM.Tests.Engine\DEM.Tests.Engine.csproj", "{1CED46E2-79D9-4202-B4B3-4A307B0084CB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DEM.Tests.Engine", "DEM.Tests.Engine\DEM.Tests.Engine.csproj", "{1CED46E2-79D9-4202-B4B3-4A307B0084CB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DEM.Common", "DEM.Common\DEM.Common.csproj", "{C293DE30-5F5D-4DCF-A859-CD6BB1CD38B3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{1CED46E2-79D9-4202-B4B3-4A307B0084CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1CED46E2-79D9-4202-B4B3-4A307B0084CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1CED46E2-79D9-4202-B4B3-4A307B0084CB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C293DE30-5F5D-4DCF-A859-CD6BB1CD38B3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C293DE30-5F5D-4DCF-A859-CD6BB1CD38B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C293DE30-5F5D-4DCF-A859-CD6BB1CD38B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C293DE30-5F5D-4DCF-A859-CD6BB1CD38B3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
