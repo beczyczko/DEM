@@ -15,7 +15,7 @@ namespace DEM.Engine
 
         public IList<World> WorldTimeSteps { get; } = new List<World>();
 
-        public async Task RunWorld(World initialStateWorld, float time, float timeStep)
+        public async Task RunWorldAsync(World initialStateWorld, float time, float timeStep)
         {
             var currentState = initialStateWorld;
             await SaveStateAsync(currentState);
@@ -32,12 +32,6 @@ namespace DEM.Engine
         {
             WorldTimeSteps.Add(snapshot);
             await _stateSaver.SaveAsync(snapshot, "test"); //todo db simulation Id
-        }
-
-        private World LoadState(string simulationId)
-        {
-            //todo db
-            return null;
         }
     }
 }

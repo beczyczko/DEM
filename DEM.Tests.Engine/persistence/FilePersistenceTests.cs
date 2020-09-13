@@ -5,13 +5,15 @@ using System.Threading.Tasks;
 using DEM.Engine;
 using DEM.Engine.Elements;
 using DEM.Engine.Persistence;
+using FluentAssertions;
+using Newtonsoft.Json;
 using Xunit;
 
 namespace DEM.Tests.Engine.persistence
 {
     public class FilePersistenceTests : IDisposable
     {
-        private readonly TestFilePathBuilder _testFilePathBuilder = new TestFilePathBuilder();
+        private readonly FilePathBuilder _testFilePathBuilder = new FilePathBuilder();
         private const string SimulationId = "test";
 
         public FilePersistenceTests()
@@ -24,17 +26,71 @@ namespace DEM.Tests.Engine.persistence
         {
             var world = RandomWorld(4);
 
-            var fileStateSaver = new FileStateSaver(_testFilePathBuilder);
-            await fileStateSaver.SaveAsync(world, SimulationId);
+            var fileWorldStateSaver = new FileWorldStateSaver(_testFilePathBuilder);
+            await fileWorldStateSaver.SaveAsync(world, SimulationId);
         }
 
+        [Fact]
+        public async Task CanLoadWorldSnapshot()
+        {
+            // arrange
+            var world = RandomWorld(4);
+            var fileWorldStateSaver = new FileWorldStateSaver(_testFilePathBuilder);
+            await fileWorldStateSaver.SaveAsync(world, SimulationId);
+            var fileWorldStateLoader = new FileWorldStateLoader(_testFilePathBuilder);
+
+            // act
+            var snapshot = fileWorldStateLoader.First(SimulationId);
+
+            // assert
+            var snapshotAsJson = JsonConvert.SerializeObject(snapshot);
+            var expectedWorldAsJson = JsonConvert.SerializeObject(world);
+            snapshotAsJson.Should().Be(expectedWorldAsJson);
+        }
+
+        [Theory]
+        [InlineData(0, 1)]
+        [InlineData(1, 2)]
+        [InlineData(3, 4)]
+        public async Task WorldSnapshotIsSavedAfterEveryStep(int simulationTime, int expectedSnapshotCount)
+        {
+            // arrange
+            var world = RandomWorld(4);
+            var worldSimulator = new WorldSimulator(new FileWorldStateSaver(_testFilePathBuilder));
+            await worldSimulator.RunWorldAsync(world, simulationTime, 1);
+            var fileWorldStateLoader = new FileWorldStateLoader(_testFilePathBuilder);
+
+            // act
+            var snapshots = fileWorldStateLoader.All(SimulationId).ToArray();
+
+            // assert
+            snapshots.Length.Should().Be(expectedSnapshotCount);
+            var snapshotsAsJson = snapshots.Select(JsonConvert.SerializeObject);
+            var expectedSnapshots = worldSimulator.WorldTimeSteps.Select(JsonConvert.SerializeObject);
+            snapshotsAsJson.Should().BeEquivalentTo(expectedSnapshots);
+        }
 
         [Fact]
-        public async Task WorldSnapshotIsSavedAfterEveryStep()
+        public async Task CanLoadSimulationFirstAndLastStep()
         {
+            // arrange
             var world = RandomWorld(4);
-            var worldSimulator = new WorldSimulator(new FileStateSaver(_testFilePathBuilder));
-            await worldSimulator.RunWorld(world, 1, 1);
+            var worldSimulator = new WorldSimulator(new FileWorldStateSaver(_testFilePathBuilder));
+            await worldSimulator.RunWorldAsync(world, 3, 1);
+            var fileWorldStateLoader = new FileWorldStateLoader(_testFilePathBuilder);
+
+            // act
+            var firstSnapshot = fileWorldStateLoader.First(SimulationId);
+            var lastSnapshot = fileWorldStateLoader.Last(SimulationId);
+
+            // assert
+            var firstSnapshotAsJson = JsonConvert.SerializeObject(firstSnapshot);
+            var expectedFirstWorldAsJson = JsonConvert.SerializeObject(worldSimulator.WorldTimeSteps.First());
+            firstSnapshotAsJson.Should().Be(expectedFirstWorldAsJson);
+
+            var lastSnapshotAsJson = JsonConvert.SerializeObject(lastSnapshot);
+            var expectedLastWorldAsJson = JsonConvert.SerializeObject(worldSimulator.WorldTimeSteps.Last());
+            lastSnapshotAsJson.Should().Be(expectedLastWorldAsJson);
         }
 
         private World RandomWorld(int particleCount)

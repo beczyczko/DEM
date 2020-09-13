@@ -6,11 +6,11 @@ using Newtonsoft.Json;
 namespace DEM.Engine.Persistence
 {
     [UsedImplicitly]
-    internal class FileStateSaver : IStateSaver
+    internal class FileWorldStateSaver : IStateSaver
     {
         private readonly IFilePathBuilder _filePathBuilder;
 
-        public FileStateSaver(IFilePathBuilder filePathBuilder)
+        public FileWorldStateSaver(IFilePathBuilder filePathBuilder)
         {
             _filePathBuilder = filePathBuilder;
         }
@@ -19,7 +19,9 @@ namespace DEM.Engine.Persistence
         {
             var filePath = _filePathBuilder.Build(simulationId);
 
+            EnsureDirectoryExists(_filePathBuilder);
             EnsureFileExists(filePath);
+
             await using var file = File.AppendText(filePath);
             var worldAsJson = JsonConvert.SerializeObject(world);
             await file.WriteLineAsync(worldAsJson);
@@ -31,6 +33,11 @@ namespace DEM.Engine.Persistence
             {
                 File.Create(filePath).Dispose();
             }
+        }
+
+        private void EnsureDirectoryExists(IFilePathBuilder filePathBuilder)
+        {
+            Directory.CreateDirectory(filePathBuilder.StorageDirectory);
         }
     }
 }

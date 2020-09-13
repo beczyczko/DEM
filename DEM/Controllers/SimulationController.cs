@@ -41,7 +41,7 @@ namespace DEM.Controllers
                 new RigidWall(new Point2d(-200, 200), new Point2d(-200, -200)), //left
             };
             var initialStateWorld = new World(particles, rigidWalls, 0);
-            _worldSimulator.RunWorld(initialStateWorld, 1000, 1);
+            await _worldSimulator.RunWorldAsync(initialStateWorld, 1000, 1);
 
             return Ok(_worldSimulator.WorldTimeSteps);
         }
@@ -55,7 +55,7 @@ namespace DEM.Controllers
                 new Particle(new Point2d(30, 0), 10, 1, new Vector2d(-1, 0)),
             };
             var initialStateWorld = new World(particles, new RigidWall[0], 0);
-            _worldSimulator.RunWorld(initialStateWorld, 1000, 1);
+            await _worldSimulator.RunWorldAsync(initialStateWorld, 1000, 1);
 
             return Ok(_worldSimulator.WorldTimeSteps);
         }

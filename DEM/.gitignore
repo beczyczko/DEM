@@ -594,3 +594,6 @@ healthchecksdb
 MigrationBackup/
 
 # End of https://www.gitignore.io/api/react,webstorm,aspnetcore,visualstudio,visualstudiocode
+
+
+simulations/*
