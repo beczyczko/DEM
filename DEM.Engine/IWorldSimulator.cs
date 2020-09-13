@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace DEM.Engine
 {
     public interface IWorldSimulator
     {
         IList<World> WorldTimeSteps { get; }
-        void RunWorld(World initialStateWorld, float time, float timeStep);
+        Task RunWorld(World initialStateWorld, float time, float timeStep);
     }
 }

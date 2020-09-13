@@ -1,26 +1,43 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using DEM.Engine.Persistence;
 
 namespace DEM.Engine
 {
     public class WorldSimulator : IWorldSimulator
     {
+        private readonly IStateSaver _stateSaver;
+
+        public WorldSimulator(IStateSaver stateSaver)
+        {
+            _stateSaver = stateSaver;
+        }
+
         public IList<World> WorldTimeSteps { get; } = new List<World>();
 
-        public void RunWorld(World initialStateWorld, float time, float timeStep)
+        public async Task RunWorld(World initialStateWorld, float time, float timeStep)
         {
             var currentState = initialStateWorld;
+            await SaveStateAsync(currentState);
+
             while (currentState.CurrentTime < time)
             {
                 var snapshot = currentState.ProcessNextStep(timeStep);
-                SaveState(snapshot);
+                await SaveStateAsync(snapshot);
                 currentState = snapshot;
             }
         }
 
-        private void SaveState(World snapshot)
+        private async Task SaveStateAsync(World snapshot)
         {
-            //todo db save to file
             WorldTimeSteps.Add(snapshot);
+            await _stateSaver.SaveAsync(snapshot, "test"); //todo db simulation Id
+        }
+
+        private World LoadState(string simulationId)
+        {
+            //todo db
+            return null;
         }
     }
 }
