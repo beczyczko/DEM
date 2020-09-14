@@ -2,7 +2,7 @@
 {
     public struct Particle : ICollidable
     {
-        public static float SpringFactor = -1F; // [N/m] //todo db how to handle different particles
+        public static float SpringFactor = -5F; // [N/m] //todo db how to handle different particles
 
         public Particle(Point2d position, float r, float m, Vector2d v)
         {
@@ -30,6 +30,13 @@
         public void ApplyForce(Vector2d force, float timeStep)
         {
             var dV = new Vector2d(force.X * timeStep / M, force.Y * timeStep / M);
+            V = V.Add(dV);
+        }
+
+        public void ApplyGravityForce(in float gravity, float timeStep)
+        {
+            // m/s^2 * s = m/s
+            var dV = new Vector2d(0, gravity * timeStep);
             V = V.Add(dV);
         }
     }

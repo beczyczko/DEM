@@ -32,6 +32,8 @@ namespace DEM.Engine
             //todo db Cohesion - rigid line <--> particle
 
             ApplyForcesToParticles(ref particlesNewState, restoringForces, timeStep);
+            ApplyGravityForcesToParticles(ref particlesNewState, timeStep);
+
             MoveParticles(ref particlesNewState, timeStep);
 
             var rigidWallsNewState = RigidWalls.ToArray(); //copy
@@ -45,6 +47,14 @@ namespace DEM.Engine
             for (int i = 0; i < particles.Length; i++)
             {
                 particles[i].ApplyForce(forces[i], timeStep);
+            }
+        }
+
+        private void ApplyGravityForcesToParticles(ref Particle[] particles, float timeStep)
+        {
+            for (int i = 0; i < particles.Length; i++)
+            {
+                particles[i].ApplyGravityForce(Gravity, timeStep);
             }
         }
 
