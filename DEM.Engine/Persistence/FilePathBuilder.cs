@@ -5,7 +5,6 @@ namespace DEM.Engine.Persistence
     [UsedImplicitly]
     internal class FilePathBuilder : IFilePathBuilder
     {
-        //todo db storage directory provider?
         public FilePathBuilder(string storageDirectory = ".\\simulations")
         {
             StorageDirectory = storageDirectory;

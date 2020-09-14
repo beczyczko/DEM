@@ -13,7 +13,7 @@ namespace DEM.Tests.Engine.persistence
 {
     public class FilePersistenceTests : IDisposable
     {
-        private readonly FilePathBuilder _testFilePathBuilder = new FilePathBuilder();
+        private readonly FilePathBuilder _filePathBuilder = new FilePathBuilder();
         private const string SimulationId = "test";
 
         public FilePersistenceTests()
@@ -26,7 +26,7 @@ namespace DEM.Tests.Engine.persistence
         {
             var world = RandomWorld(4);
 
-            var fileWorldStateSaver = new FileWorldStateSaver(_testFilePathBuilder);
+            var fileWorldStateSaver = new FileWorldStateSaver(_filePathBuilder);
             await fileWorldStateSaver.SaveAsync(world, SimulationId);
         }
 
@@ -35,9 +35,9 @@ namespace DEM.Tests.Engine.persistence
         {
             // arrange
             var world = RandomWorld(4);
-            var fileWorldStateSaver = new FileWorldStateSaver(_testFilePathBuilder);
+            var fileWorldStateSaver = new FileWorldStateSaver(_filePathBuilder);
             await fileWorldStateSaver.SaveAsync(world, SimulationId);
-            var fileWorldStateLoader = new FileWorldStateLoader(_testFilePathBuilder);
+            var fileWorldStateLoader = new FileWorldStateLoader(_filePathBuilder);
 
             // act
             var snapshot = fileWorldStateLoader.First(SimulationId);
@@ -56,9 +56,9 @@ namespace DEM.Tests.Engine.persistence
         {
             // arrange
             var world = RandomWorld(4);
-            var worldSimulator = new WorldSimulator(new FileWorldStateSaver(_testFilePathBuilder));
-            await worldSimulator.RunWorldAsync(world, simulationTime, 1);
-            var fileWorldStateLoader = new FileWorldStateLoader(_testFilePathBuilder);
+            var worldSimulator = new WorldSimulator(new FileWorldStateSaver(_filePathBuilder));
+            await worldSimulator.RunWorldAsync(world, simulationTime, 1, SimulationId);
+            var fileWorldStateLoader = new FileWorldStateLoader(_filePathBuilder);
 
             // act
             var snapshots = fileWorldStateLoader.All(SimulationId).ToArray();
@@ -75,9 +75,9 @@ namespace DEM.Tests.Engine.persistence
         {
             // arrange
             var world = RandomWorld(4);
-            var worldSimulator = new WorldSimulator(new FileWorldStateSaver(_testFilePathBuilder));
-            await worldSimulator.RunWorldAsync(world, 3, 1);
-            var fileWorldStateLoader = new FileWorldStateLoader(_testFilePathBuilder);
+            var worldSimulator = new WorldSimulator(new FileWorldStateSaver(_filePathBuilder));
+            await worldSimulator.RunWorldAsync(world, 3, 1, SimulationId);
+            var fileWorldStateLoader = new FileWorldStateLoader(_filePathBuilder);
 
             // act
             var firstSnapshot = fileWorldStateLoader.First(SimulationId);
@@ -116,7 +116,7 @@ namespace DEM.Tests.Engine.persistence
 
         private void DeleteTestFile()
         {
-            var filePath = _testFilePathBuilder.Build(SimulationId);
+            var filePath = _filePathBuilder.Build(SimulationId);
             if (File.Exists(filePath))
             {
                 File.Delete(filePath);
