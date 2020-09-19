@@ -5,8 +5,8 @@ namespace DEM.Engine.CollisionSolver
 {
     public abstract class CollisionSolver<T1, T2> where T1 : ICollidable where T2 : ICollidable
     {
-        public abstract Vector2d CalculateCollisionForce(T1 element1, T2 element2);
-        public abstract bool CollisionHappened(T1 element1, T2 element2);
+        public abstract Vector2d CalculateCollisionForce(in T1 element1, in T2 element2);
+        public abstract bool CollisionHappened(in T1 element1, in T2 element2);
     }
 
     public static class CollisionSolver

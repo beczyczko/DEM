@@ -5,8 +5,7 @@ namespace DEM.Engine
 {
     public class World
     {
-        public static float ParticlesBounceFactor = 0.95F; //todo db use it
-
+        public static float ParticlesBounceFactor = 1; //todo db make it not static
 
         public float CurrentTime { get; }
         public float Gravity { get; }

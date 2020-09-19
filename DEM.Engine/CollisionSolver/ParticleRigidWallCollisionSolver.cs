@@ -5,7 +5,7 @@ namespace DEM.Engine.CollisionSolver
 {
     public class ParticleRigidWallCollisionSolver : CollisionSolver<Particle, RigidWall>
     {
-        public override Vector2d CalculateCollisionForce(Particle element1, RigidWall element2)
+        public override Vector2d CalculateCollisionForce(in Particle element1, in RigidWall element2)
         {
             if (CollisionHappened(element1, element2))
             {
@@ -23,12 +23,12 @@ namespace DEM.Engine.CollisionSolver
 
                 var deformation = element1.R - distanceFromParticleToWall; // [m]
 
-                var bounceForce = - element1.K * deformation / distanceFromParticleToWall; // N/m * m/m = N/m
-                return new Vector2d
-                {
-                    X = bounceForce * deltaX, // N/m * m = N
-                    Y = bounceForce * deltaY
-                };
+                var dumpingFactor = DumpingFactor(element1, closestPointOfWallToParticle);
+                var bounceForce = -element1.K * dumpingFactor * deformation / distanceFromParticleToWall; // N/m * m/m = N/m
+                return new Vector2d(
+                    bounceForce * deltaX, // N/m * m = N
+                    bounceForce * deltaY
+                    );
             }
             else
             {
@@ -36,7 +36,7 @@ namespace DEM.Engine.CollisionSolver
             }
         }
 
-        public override bool CollisionHappened(Particle element1, RigidWall element2)
+        public override bool CollisionHappened(in Particle element1, in RigidWall element2)
         {
             var closestPointOfWallToParticle = ClosestPointOfWallToParticle(element1, element2);
             var distanceFromParticleToWall = closestPointOfWallToParticle.Distance(element1.Position);
@@ -65,6 +65,25 @@ namespace DEM.Engine.CollisionSolver
             }
 
             return p3;
+        }
+
+        private float DumpingFactor(in Particle particle, in Point2d closestPointOfWallToParticle)
+        {
+            var currentPositionDiff = closestPointOfWallToParticle.Diff(particle.Position);
+
+            var futurePositionDiff = currentPositionDiff.Add(particle.V.Multiply(-0.00001F)); //todo db small value should work nice but better would be timeStep?
+
+            var currentPositionDiffScalar = currentPositionDiff.Scalar;
+            var futurePositionDiffScalar = futurePositionDiff.Scalar;
+
+            if (currentPositionDiffScalar < futurePositionDiffScalar) // dismissal
+            {
+                return 1 * World.ParticlesBounceFactor;
+            }
+            else // approach
+            {
+                return 1 / World.ParticlesBounceFactor;
+            }
         }
     }
 }

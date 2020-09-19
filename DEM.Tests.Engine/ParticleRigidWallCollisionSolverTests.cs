@@ -72,6 +72,8 @@ namespace DEM.Tests.Engine
                 //todo db test case where mass is diffrent than 1
                 //todo db test case where mass is diffrent than 1
                 //todo db test case where particle hit the end of wall with offset
+                //todo db test case DumpingFactor - best write as PBT https://github.com/fscheck/FsCheck
+                //todo db test case Mass - best to write as PBT https://github.com/fscheck/FsCheck
             };
     }
 }
