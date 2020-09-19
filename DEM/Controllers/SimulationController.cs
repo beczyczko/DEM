@@ -36,6 +36,7 @@ namespace DEM.Controllers
                         random.Next(-100, 100)),
                     10,
                     1,
+                    10,
                     new Vector2d(NextFloat(random), NextFloat(random))))
                 .ToArray();
 
@@ -57,8 +58,8 @@ namespace DEM.Controllers
         {
             var particles = new[]
             {
-                new Particle(new Point2d(-30, 0), 10, 1, new Vector2d(1, 0)),
-                new Particle(new Point2d(30, 0), 10, 1, new Vector2d(-1, 0)),
+                new Particle(new Point2d(-30, 0), 10, 1, 10, new Vector2d(1, 0)),
+                new Particle(new Point2d(30, 0), 10, 1, 10, new Vector2d(-1, 0)),
             };
             var initialStateWorld = new World(particles, new RigidWall[0], 0);
             await _worldSimulator.RunWorldAsync(initialStateWorld, 1000, 1, "test", 1);

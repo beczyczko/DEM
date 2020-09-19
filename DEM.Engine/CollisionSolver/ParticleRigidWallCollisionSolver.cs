@@ -23,7 +23,7 @@ namespace DEM.Engine.CollisionSolver
 
                 var deformation = element1.R - distanceFromParticleToWall; // [m]
 
-                var bounceForce = Particle.SpringFactor * deformation / distanceFromParticleToWall; // N/m * m/m = N/m
+                var bounceForce = - element1.K * deformation / distanceFromParticleToWall; // N/m * m/m = N/m
                 return new Vector2d
                 {
                     X = bounceForce * deltaX, // N/m * m = N

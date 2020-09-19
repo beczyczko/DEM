@@ -29,42 +29,42 @@ namespace DEM.Tests.Engine
             {
                 new object[]
                 {
-                    new Particle(new Point2d(5, 0), 6, 1, Vector2d.Zero),
+                    new Particle(new Point2d(5, 0), 6, 1, 1, Vector2d.Zero),
                     new RigidWall(new Point2d(0, 10), new Point2d(0, -10)),
                     new Point2d(0,0),
                     new Vector2d(1, 0),
                 },
                 new object[]
                 {
-                    new Particle(new Point2d(-4, 4), 4, 1, Vector2d.Zero),
+                    new Particle(new Point2d(-4, 4), 4, 1, 1, Vector2d.Zero),
                     new RigidWall(new Point2d(10, 10), new Point2d(-10, -10)),
                     new Point2d(0,0),
                     new Vector2d(0, 0),
                 },
                 new object[]
                 {
-                    new Particle(new Point2d(-1, 1), 2, 1, Vector2d.Zero),
+                    new Particle(new Point2d(-1, 1), 2, 1, 1, Vector2d.Zero),
                     new RigidWall(new Point2d(10, 10), new Point2d(-10, -10)),
                     new Point2d(0,0),
                     new Vector2d(-0.4142136F, 0.4142136F),
                 },
                 new object[] //point on the line
                 {
-                    new Particle(new Point2d(0, 0), 1, 1, Vector2d.Zero),
+                    new Particle(new Point2d(0, 0), 1, 1, 1, Vector2d.Zero),
                     new RigidWall(new Point2d(10, 10), new Point2d(-10, -10)),
                     new Point2d(0,0),
                     new Vector2d(0,0),
                 },
                 new object[] //point on the line
                 {
-                    new Particle(new Point2d(5, 5), 1, 1, Vector2d.Zero),
+                    new Particle(new Point2d(5, 5), 1, 1, 1, Vector2d.Zero),
                     new RigidWall(new Point2d(10, 10), new Point2d(-10, -10)),
                     new Point2d(5,5),
                     new Vector2d(0,0),
                 },
                 new object[] //point on the line
                 {
-                    new Particle(new Point2d(10, 10), 1, 1, Vector2d.Zero),
+                    new Particle(new Point2d(10, 10), 1, 1, 1, Vector2d.Zero),
                     new RigidWall(new Point2d(10, 10), new Point2d(-10, -10)),
                     new Point2d(10,10),
                     new Vector2d(0,0),

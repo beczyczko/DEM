@@ -2,19 +2,23 @@
 {
     public struct Particle : ICollidable
     {
-        public static float SpringFactor = -20F; // [N/m] //todo db how to handle different particles
-
-        public Particle(Point2d position, float r, float m, Vector2d v)
+        public Particle(Point2d position, float r, float m, float k, Vector2d v)
         {
             Position = position;
             R = r;
             M = m;
+            K = k;
             V = v;
         }
 
         public Point2d Position { get; set; }
         public float R { get; set; }
         public float M { get; set; }
+
+        /// <summary>
+        /// K - Spring Constant
+        /// </summary>
+        public float K { get; set; }
         public Vector2d V { get; set; }
 
         public void Move(float timeStep)

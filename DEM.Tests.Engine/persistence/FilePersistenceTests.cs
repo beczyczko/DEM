@@ -103,6 +103,7 @@ namespace DEM.Tests.Engine.persistence
                         random.Next(-80, 80)),
                     5,
                     1,
+                    20,
                     new Vector2d(random.Next(-2, 2), random.Next(-2, 2))))
                 .ToArray();
             var world = new World(particles, new RigidWall[0], 0);

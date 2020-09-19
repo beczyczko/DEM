@@ -17,7 +17,13 @@ namespace DEM.Engine.CollisionSolver
                 var deltaY = element2.Position.Y - element1.Position.Y; // [m]
                 var distance = (float)Math.Sqrt(deltaX * deltaX + deltaY * deltaY); // [m]
                 var deformation = (element1.R + element2.R - distance) / 2; // [m]
-                var bounceForce = Particle.SpringFactor * deformation / distance; // N/m * m/m = N/m
+
+                var equivalentSpringConstant = element1.K * element2.K / (element1.K + element2.K);
+
+                var bounceForce = -equivalentSpringConstant * deformation / distance; // N/m * m/m = N/m
+
+                // todo db need more analysis if force should be 2x bigger
+                // https://socratic.org/questions/what-is-the-spring-constant-in-parallel-connection-and-series-connection
                 return new Vector2d
                 {
                     X = bounceForce * deltaX, // N/m * m = N
