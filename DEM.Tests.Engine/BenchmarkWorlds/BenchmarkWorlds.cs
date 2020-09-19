@@ -47,8 +47,8 @@ namespace DEM.Tests.Engine.BenchmarkWorlds
         [Theory]
         [InlineData(100, 0.1F, 1, 1)]
         [InlineData(100, 0.1F, 1, 0.8)]
-        [InlineData(1000, 0.2F, 5, 0.2)]
-        [InlineData(1000, 0.05F, 5, 0.8)]
+        // [InlineData(1000, 0.2F, 5, 0.2)]
+        // [InlineData(1000, 0.05F, 5, 0.8)]
         // [InlineData(100, 0.01F, 10, 1)]
         public async Task Run_particles_triangular_random_benchmark_world_parametrized(
             float time,
