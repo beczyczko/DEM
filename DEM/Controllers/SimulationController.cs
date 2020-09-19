@@ -61,7 +61,7 @@ namespace DEM.Controllers
                 new Particle(new Point2d(-30, 0), 10, 1, 10, new Vector2d(1, 0)),
                 new Particle(new Point2d(30, 0), 10, 1, 10, new Vector2d(-1, 0)),
             };
-            var initialStateWorld = new World(particles, new RigidWall[0], 0);
+            var initialStateWorld = new World(particles, new RigidWall[0], 0, 0);
             await _worldSimulator.RunWorldAsync(initialStateWorld, 1000, 1, "test", 1);
 
             return Ok(_worldSimulator.WorldTimeSteps);

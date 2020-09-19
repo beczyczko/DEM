@@ -7,16 +7,17 @@ namespace DEM.Engine
     {
         public static float ParticlesBounceFactor = 0.95F; //todo db use it
 
-        public static float Gravity = 0.0981F;
 
         public float CurrentTime { get; }
-        public Particle[] Particles { get; set; }
+        public float Gravity { get; }
+        public Particle[] Particles { get; }
         public RigidWall[] RigidWalls { get; }
 
-        public World(Particle[] particlesInitState, RigidWall[] rigidWalls, float currentTime)
+        public World(Particle[] particles, RigidWall[] rigidWalls, float currentTime, float gravity = 0.0981F)
         {
             CurrentTime = currentTime;
-            Particles = particlesInitState;
+            Gravity = gravity;
+            Particles = particles;
             RigidWalls = rigidWalls;
         }
 
@@ -31,13 +32,17 @@ namespace DEM.Engine
             //todo db Cohesion - rigid line <--> particle
 
             ApplyForcesToParticles(ref particlesNewState, restoringForces, timeStep);
-            ApplyGravityForcesToParticles(ref particlesNewState, timeStep);
+
+            if (Gravity != 0)
+            {
+                ApplyGravityForcesToParticles(ref particlesNewState, timeStep);
+            }
 
             MoveParticles(ref particlesNewState, timeStep);
 
             var rigidWallsNewState = RigidWalls.ToArray(); //copy
 
-            var worldSnapshot = new World(particlesNewState, rigidWallsNewState, CurrentTime + timeStep);
+            var worldSnapshot = new World(particlesNewState, rigidWallsNewState, CurrentTime + timeStep, Gravity);
             return worldSnapshot;
         }
 
