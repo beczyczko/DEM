@@ -41,7 +41,7 @@ namespace DEM.Tests.Engine.BenchmarkWorlds
 
             await _fileWorldStateSaver.SaveAsync(world, simulationId);
         }
-        
+
         [Theory]
         [InlineData(100, 0.1F, 1)]
         [InlineData(100, 0.01F, 10)]

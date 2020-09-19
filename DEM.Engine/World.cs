@@ -7,7 +7,7 @@ namespace DEM.Engine
     {
         public static float ParticlesBounceFactor = 0.95F; //todo db use it
 
-        public static float Gravity = 0.0981F; // todo db define gravity
+        public static float Gravity = 0.0981F;
 
         public float CurrentTime { get; }
         public Particle[] Particles { get; set; }
@@ -20,14 +20,13 @@ namespace DEM.Engine
             RigidWalls = rigidWalls;
         }
 
-        public World ProcessNextStep(float timeStep) //todo db make sure timeStep affects every physic aspect
+        public World ProcessNextStep(float timeStep)
         {
             var currentParticles = Particles;
 
             var particlesNewState = currentParticles.ToArray(); //copy
 
             var restoringForces = RestoringForceCalc(currentParticles, RigidWalls);
-            //todo db Global Gravity force - particles
             //todo db Cohesion - particles <--> particle
             //todo db Cohesion - rigid line <--> particle
 
