@@ -57,7 +57,7 @@ namespace DEM.Tests.Engine.persistence
             // arrange
             var world = RandomWorld(4);
             var worldSimulator = new WorldSimulator(new FileWorldStateSaver(_filePathBuilder));
-            await worldSimulator.RunWorldAsync(world, simulationTime, 1, SimulationId);
+            await worldSimulator.RunWorldAsync(world, simulationTime, 1, SimulationId, 1);
             var fileWorldStateLoader = new FileWorldStateLoader(_filePathBuilder);
 
             // act
@@ -76,7 +76,7 @@ namespace DEM.Tests.Engine.persistence
             // arrange
             var world = RandomWorld(4);
             var worldSimulator = new WorldSimulator(new FileWorldStateSaver(_filePathBuilder));
-            await worldSimulator.RunWorldAsync(world, 3, 1, SimulationId);
+            await worldSimulator.RunWorldAsync(world, 3, 1, SimulationId, 1);
             var fileWorldStateLoader = new FileWorldStateLoader(_filePathBuilder);
 
             // act

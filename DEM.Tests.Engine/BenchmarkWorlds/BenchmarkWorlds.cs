@@ -41,20 +41,25 @@ namespace DEM.Tests.Engine.BenchmarkWorlds
 
             await _fileWorldStateSaver.SaveAsync(world, simulationId);
         }
-
-        [Fact]
-        public async Task Run_particles_triangular_random_benchmark_world()
+        
+        [Theory]
+        [InlineData(100, 0.1F, 1)]
+        [InlineData(100, 0.01F, 10)]
+        public async Task Run_particles_triangular_random_benchmark_world_parametrized(
+            float time,
+            float timeStep,
+            int stepsPerSnapshot)
         {
             var simulationInitStateId = "particles_triangular_random_init_state";
 
             var fileWorldStateLoader = new FileWorldStateLoader(_filePathBuilder);
             var worldInitState = fileWorldStateLoader.First(simulationInitStateId);
 
-            var simulationId = "particles_triangular_random";
+            var simulationId = $"particles_triangular_random_{time}_{timeStep}_{stepsPerSnapshot}";
             DeleteSimulationSnapshotsFile(simulationId);
 
             var worldSimulator = new WorldSimulator(_fileWorldStateSaver);
-            await worldSimulator.RunWorldAsync(worldInitState, 100, 0.1F, simulationId);
+            await worldSimulator.RunWorldAsync(worldInitState, time, timeStep, simulationId, stepsPerSnapshot);
         }
 
         private void DeleteSimulationSnapshotsFile(string simulationId)
