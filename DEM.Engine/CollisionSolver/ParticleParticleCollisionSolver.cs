@@ -1,5 +1,4 @@
-﻿using System;
-using System.Numerics;
+﻿using System.Numerics;
 using DEM.Engine.Elements;
 
 namespace DEM.Engine.CollisionSolver
@@ -8,51 +7,61 @@ namespace DEM.Engine.CollisionSolver
     {
         public override Vector2 CalculateCollisionForce(in Particle element1, in Particle element2)
         {
-            if (element1.Equals(element2) || !CollisionHappened(element1, element2))
+            if (element1.Equals(element2))
             {
                 return Vector2.Zero;
             }
             else
             {
-                var deltaX = element2.Position.X - element1.Position.X; // [m]
-                var deltaY = element2.Position.Y - element1.Position.Y; // [m]
-                var distance = (float)Math.Sqrt(deltaX * deltaX + deltaY * deltaY); // [m]
-                var deformation = (element1.R + element2.R - distance) / 2; // [m]
+                // check collision, CollisionHappened method is not used to increase performance
+                var positionDiff = element2.Position - element1.Position;
 
-                var equivalentSpringConstant = element1.K * element2.K / (element1.K + element2.K);
+                var distance = positionDiff.Length();
+                var radiusSum = element1.R + element2.R;
 
-                var dumpingFactor = DumpingFactor(element1, element2);
-                var bounceForce = -equivalentSpringConstant * dumpingFactor * deformation / distance; // N/m * m/m = N/m
+                if (distance > radiusSum)
+                {
+                    return Vector2.Zero;
+                }
+                else
+                {
+                    var dumpingFactor = DumpingFactor(element1, element2, positionDiff);
 
-                // todo db need more analysis if force should be 2x bigger
-                // https://socratic.org/questions/what-is-the-spring-constant-in-parallel-connection-and-series-connection
-                return new Vector2(
-                    bounceForce * deltaX, // N/m * m = N
-                    bounceForce * deltaY
-                );
+                    var deformation = (radiusSum - distance) / 2; // [m]
+
+                    var equivalentSpringConstant = element1.K * element2.K / (element1.K + element2.K);
+
+                    var bounceForce = -equivalentSpringConstant * dumpingFactor * deformation / distance; // N/m * m/m = N/m
+
+                    // todo db need more analysis if force should be 2x bigger
+                    // https://socratic.org/questions/what-is-the-spring-constant-in-parallel-connection-and-series-connection
+                    return positionDiff * bounceForce;
+                }
             }
         }
 
         public override bool CollisionHappened(in Particle element1, in Particle element2)
         {
-            var deltaX = element2.Position.X - element1.Position.X;
-            var deltaY = element2.Position.Y - element1.Position.Y;
+            var positionDiff = element2.Position - element1.Position;
 
-            var distance = Math.Sqrt(deltaX * deltaX + deltaY * deltaY);
+            var distance = positionDiff.Length();
             var radiusSum = element1.R + element2.R;
 
-            var wasHit = distance < radiusSum;
-            return wasHit;
+            return distance < radiusSum;
         }
 
-        private float DumpingFactor(in Particle element1, in Particle element2)
+        private float DumpingFactor(in Particle element1, in Particle element2, Vector2 positionDiff)
         {
-            var currentPositionDiff = element2.Position - element1.Position;
+            if (World.ParticlesBounceFactor == 1f)
+            {
+                return 1;
+            }
+
             var currentVelocityDiff = element2.V - element1.V;
 
-            var futurePositionDiff = currentPositionDiff + currentVelocityDiff * 0.00001F; //todo db small value should work nice but better would be timeStep?
+            var futurePositionDiff = positionDiff + currentVelocityDiff * 0.00001F; //todo db small value should work nice but better would be timeStep?
 
-            var currentPositionDiffScalar = currentPositionDiff.LengthSquared();
+            var currentPositionDiffScalar = positionDiff.LengthSquared();
             var futurePositionDiffScalar = futurePositionDiff.LengthSquared();
 
             if (currentPositionDiffScalar < futurePositionDiffScalar) // dismissal
