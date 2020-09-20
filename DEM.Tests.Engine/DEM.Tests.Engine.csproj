@@ -18,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\DEM.Benchmarks\DEM.Benchmarks.csproj" />
     <ProjectReference Include="..\DEM.Engine\DEM.Engine.csproj" />
   </ItemGroup>
 

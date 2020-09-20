@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DEM.Engine", "DEM.Engine\DE
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DEM.Tests.Engine", "DEM.Tests.Engine\DEM.Tests.Engine.csproj", "{1CED46E2-79D9-4202-B4B3-4A307B0084CB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DEM.Common", "DEM.Common\DEM.Common.csproj", "{C293DE30-5F5D-4DCF-A859-CD6BB1CD38B3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DEM.Common", "DEM.Common\DEM.Common.csproj", "{C293DE30-5F5D-4DCF-A859-CD6BB1CD38B3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DEM.Benchmarks", "DEM.Benchmarks\DEM.Benchmarks.csproj", "{10F0C5F2-8131-4310-8B43-F5C02038663B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{C293DE30-5F5D-4DCF-A859-CD6BB1CD38B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C293DE30-5F5D-4DCF-A859-CD6BB1CD38B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C293DE30-5F5D-4DCF-A859-CD6BB1CD38B3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{10F0C5F2-8131-4310-8B43-F5C02038663B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{10F0C5F2-8131-4310-8B43-F5C02038663B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{10F0C5F2-8131-4310-8B43-F5C02038663B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{10F0C5F2-8131-4310-8B43-F5C02038663B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
