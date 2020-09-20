@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Numerics;
 using DEM.Engine.Elements;
 
 namespace DEM.Engine
@@ -45,7 +46,7 @@ namespace DEM.Engine
             return worldSnapshot;
         }
 
-        private void ApplyForcesToParticles(ref Particle[] particles, Vector2d[] forces, float timeStep)
+        private void ApplyForcesToParticles(ref Particle[] particles, Vector2[] forces, float timeStep)
         {
             for (int i = 0; i < particles.Length; i++)
             {
@@ -61,14 +62,14 @@ namespace DEM.Engine
             }
         }
 
-        public Vector2d[] RestoringForceCalc(Particle[] particles, RigidWall[] rigidWalls)
+        public Vector2[] RestoringForceCalc(Particle[] particles, RigidWall[] rigidWalls)
         {
             var collidableElements = particles
                 .Select(p => p as ICollidable)
                 .Concat(rigidWalls.Select(w => w as ICollidable))
                 .ToArray();
 
-            var forces = new Vector2d[particles.Length];
+            var forces = new Vector2[particles.Length];
             for (var i = 0; i < particles.Length; i++)
             {
                 forces[i] = particles[i].CalculateCollisionForce(collidableElements);

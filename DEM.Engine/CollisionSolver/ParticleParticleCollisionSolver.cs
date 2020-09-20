@@ -1,15 +1,16 @@
 ﻿using System;
+using System.Numerics;
 using DEM.Engine.Elements;
 
 namespace DEM.Engine.CollisionSolver
 {
     public class ParticleParticleCollisionSolver : CollisionSolver<Particle, Particle>
     {
-        public override Vector2d CalculateCollisionForce(in Particle element1, in Particle element2)
+        public override Vector2 CalculateCollisionForce(in Particle element1, in Particle element2)
         {
             if (element1.Equals(element2) || !CollisionHappened(element1, element2))
             {
-                return new Vector2d();
+                return Vector2.Zero;
             }
             else
             {
@@ -25,7 +26,7 @@ namespace DEM.Engine.CollisionSolver
 
                 // todo db need more analysis if force should be 2x bigger
                 // https://socratic.org/questions/what-is-the-spring-constant-in-parallel-connection-and-series-connection
-                return new Vector2d(
+                return new Vector2(
                     bounceForce * deltaX, // N/m * m = N
                     bounceForce * deltaY
                 );
@@ -46,13 +47,13 @@ namespace DEM.Engine.CollisionSolver
 
         private float DumpingFactor(in Particle element1, in Particle element2)
         {
-            var currentPositionDiff = element2.Position.Diff(element1.Position);
-            var currentVelocityDiff = element2.V.Subtract(element1.V);
+            var currentPositionDiff = element2.Position - element1.Position;
+            var currentVelocityDiff = element2.V - element1.V;
 
-            var futurePositionDiff = currentPositionDiff.Add(currentVelocityDiff.Multiply(0.00001F)); //todo db small value should work nice but better would be timeStep?
+            var futurePositionDiff = currentPositionDiff + currentVelocityDiff * 0.00001F; //todo db small value should work nice but better would be timeStep?
 
-            var currentPositionDiffScalar = currentPositionDiff.Scalar;
-            var futurePositionDiffScalar = futurePositionDiff.Scalar;
+            var currentPositionDiffScalar = currentPositionDiff.LengthSquared();
+            var futurePositionDiffScalar = futurePositionDiff.LengthSquared();
 
             if (currentPositionDiffScalar < futurePositionDiffScalar) // dismissal
             {

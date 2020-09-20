@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Numerics;
 using DEM.Engine.Elements;
 
 namespace DEM.Engine.CollisionSolver
 {
     public abstract class CollisionSolver<T1, T2> where T1 : ICollidable where T2 : ICollidable
     {
-        public abstract Vector2d CalculateCollisionForce(in T1 element1, in T2 element2);
+        public abstract Vector2 CalculateCollisionForce(in T1 element1, in T2 element2);
         public abstract bool CollisionHappened(in T1 element1, in T2 element2);
     }
 
@@ -17,7 +18,7 @@ namespace DEM.Engine.CollisionSolver
         private static readonly ParticleRigidWallCollisionSolver ParticleRigidWallCollisionSolver =
             new ParticleRigidWallCollisionSolver();
 
-        public static Vector2d CalculateCollisionForce(ICollidable element1, ICollidable element2)
+        public static Vector2 CalculateCollisionForce(ICollidable element1, ICollidable element2)
         {
             var collisionForce = (element1, element2) switch
             {
@@ -33,14 +34,14 @@ namespace DEM.Engine.CollisionSolver
             return collisionForce;
         }
 
-        public static Vector2d CalculateCollisionForce(ICollidable element1, ICollidable[] interactionElements)
+        public static Vector2 CalculateCollisionForce(ICollidable element1, ICollidable[] interactionElements)
         {
-            var totalForce = new Vector2d();
+            var totalForce = new Vector2();
 
             foreach (var element in interactionElements)
             {
                 var interaction = CalculateCollisionForce(element1, element);
-                totalForce = totalForce.Add(interaction);
+                totalForce += interaction;
             }
 
             return totalForce;

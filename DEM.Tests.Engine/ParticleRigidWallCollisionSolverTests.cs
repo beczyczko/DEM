@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using DEM.Engine;
+using System.Numerics;
 using DEM.Engine.CollisionSolver;
 using DEM.Engine.Elements;
 using FluentAssertions;
@@ -14,8 +14,8 @@ namespace DEM.Tests.Engine
         public void ParticleWallCollisionTests(
             Particle particle,
             RigidWall rigidWall,
-            Point2d expectedClosestPointOfWall,
-            Vector2d expectedCollisionForce)
+            Vector2 expectedClosestPointOfWall,
+            Vector2 expectedCollisionForce)
         {
             var particleRigidWallCollisionSolver = new ParticleRigidWallCollisionSolver();
             var closestPointOfWallToParticle = particleRigidWallCollisionSolver.ClosestPointOfWallToParticle(particle, rigidWall);
@@ -29,45 +29,45 @@ namespace DEM.Tests.Engine
             {
                 new object[]
                 {
-                    new Particle(new Point2d(5, 0), 6, 1, 1, Vector2d.Zero),
-                    new RigidWall(new Point2d(0, 10), new Point2d(0, -10)),
-                    new Point2d(0,0),
-                    new Vector2d(1, 0),
+                    new Particle(new Vector2(5, 0), 6, 1, 1, Vector2.Zero),
+                    new RigidWall(new Vector2(0, 10), new Vector2(0, -10)),
+                    new Vector2(0,0),
+                    new Vector2(1, 0),
                 },
                 new object[]
                 {
-                    new Particle(new Point2d(-4, 4), 4, 1, 1, Vector2d.Zero),
-                    new RigidWall(new Point2d(10, 10), new Point2d(-10, -10)),
-                    new Point2d(0,0),
-                    new Vector2d(0, 0),
+                    new Particle(new Vector2(-4, 4), 4, 1, 1, Vector2.Zero),
+                    new RigidWall(new Vector2(10, 10), new Vector2(-10, -10)),
+                    new Vector2(0,0),
+                    new Vector2(0, 0),
                 },
                 new object[]
                 {
-                    new Particle(new Point2d(-1, 1), 2, 1, 1, Vector2d.Zero),
-                    new RigidWall(new Point2d(10, 10), new Point2d(-10, -10)),
-                    new Point2d(0,0),
-                    new Vector2d(-0.4142136F, 0.4142136F),
+                    new Particle(new Vector2(-1, 1), 2, 1, 1, Vector2.Zero),
+                    new RigidWall(new Vector2(10, 10), new Vector2(-10, -10)),
+                    new Vector2(0,0),
+                    new Vector2(-0.4142136F, 0.4142136F),
                 },
                 new object[] //point on the line
                 {
-                    new Particle(new Point2d(0, 0), 1, 1, 1, Vector2d.Zero),
-                    new RigidWall(new Point2d(10, 10), new Point2d(-10, -10)),
-                    new Point2d(0,0),
-                    new Vector2d(0,0),
+                    new Particle(new Vector2(0, 0), 1, 1, 1, Vector2.Zero),
+                    new RigidWall(new Vector2(10, 10), new Vector2(-10, -10)),
+                    new Vector2(0,0),
+                    new Vector2(0,0),
                 },
                 new object[] //point on the line
                 {
-                    new Particle(new Point2d(5, 5), 1, 1, 1, Vector2d.Zero),
-                    new RigidWall(new Point2d(10, 10), new Point2d(-10, -10)),
-                    new Point2d(5,5),
-                    new Vector2d(0,0),
+                    new Particle(new Vector2(5, 5), 1, 1, 1, Vector2.Zero),
+                    new RigidWall(new Vector2(10, 10), new Vector2(-10, -10)),
+                    new Vector2(5,5),
+                    new Vector2(0,0),
                 },
                 new object[] //point on the line
                 {
-                    new Particle(new Point2d(10, 10), 1, 1, 1, Vector2d.Zero),
-                    new RigidWall(new Point2d(10, 10), new Point2d(-10, -10)),
-                    new Point2d(10,10),
-                    new Vector2d(0,0),
+                    new Particle(new Vector2(10, 10), 1, 1, 1, Vector2.Zero),
+                    new RigidWall(new Vector2(10, 10), new Vector2(-10, -10)),
+                    new Vector2(10,10),
+                    new Vector2(0,0),
                 },
                 //todo db test case where mass is diffrent than 1
                 //todo db test case where mass is diffrent than 1

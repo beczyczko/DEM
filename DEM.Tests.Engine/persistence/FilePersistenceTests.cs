@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 using System.Threading.Tasks;
 using DEM.Engine;
 using DEM.Engine.Elements;
@@ -99,13 +100,13 @@ namespace DEM.Tests.Engine.persistence
             var random = new Random();
             var particles = Enumerable.Range(0, particleCount)
                 .Select(i => new Particle(
-                    new Point2d(
+                    new Vector2(
                         random.Next(-80, 80),
                         random.Next(-80, 80)),
                     5,
                     1,
                     20,
-                    new Vector2d(random.Next(-2, 2), random.Next(-2, 2))))
+                    new Vector2(random.Next(-2, 2), random.Next(-2, 2))))
                 .ToArray();
             var world = new World(particles, new RigidWall[0], 0);
             return world;

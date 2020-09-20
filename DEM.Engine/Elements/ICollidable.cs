@@ -1,7 +1,9 @@
-﻿namespace DEM.Engine.Elements
+﻿using System.Numerics;
+
+namespace DEM.Engine.Elements
 {
     public interface ICollidable
     {
-        Vector2d CalculateCollisionForce(ICollidable[] interactionElements);
+        Vector2 CalculateCollisionForce(ICollidable[] interactionElements);
     }
 }

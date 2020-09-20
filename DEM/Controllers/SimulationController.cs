@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 using System.Threading.Tasks;
 using DEM.Common.Dispatchers;
 using DEM.Engine;
@@ -35,21 +36,21 @@ namespace DEM.Controllers
             var random = new Random();
             var particles = Enumerable.Range(0, 30)
                 .Select(i => new Particle(
-                    new Point2d(
+                    new Vector2(
                         random.Next(-100, 100),
                         random.Next(-100, 100)),
                     10,
                     1,
                     10,
-                    new Vector2d(NextFloat(random), NextFloat(random))))
+                    new Vector2(NextFloat(random), NextFloat(random))))
                 .ToArray();
 
             var rigidWalls = new[]
             {
-                new RigidWall(new Point2d(-200, -200), new Point2d(250, -200)), //top
-                new RigidWall(new Point2d(250, -200), new Point2d(150, 200)), //right
-                new RigidWall(new Point2d(150, 200), new Point2d(-200, 200)), //bottom
-                new RigidWall(new Point2d(-200, 200), new Point2d(-200, -200)), //left
+                new RigidWall(new Vector2(-200, -200), new Vector2(250, -200)), //top
+                new RigidWall(new Vector2(250, -200), new Vector2(150, 200)), //right
+                new RigidWall(new Vector2(150, 200), new Vector2(-200, 200)), //bottom
+                new RigidWall(new Vector2(-200, 200), new Vector2(-200, -200)), //left
             };
             var initialStateWorld = new World(particles, rigidWalls, 0);
             await _worldSimulator.RunWorldAsync(initialStateWorld, new SimulationParams(1000, 1, "test", 1));
@@ -62,8 +63,8 @@ namespace DEM.Controllers
         {
             var particles = new[]
             {
-                new Particle(new Point2d(-30, 0), 10, 1, 10, new Vector2d(1, 0)),
-                new Particle(new Point2d(30, 0), 10, 1, 10, new Vector2d(-1, 0)),
+                new Particle(new Vector2(-30, 0), 10, 1, 10, new Vector2(1, 0)),
+                new Particle(new Vector2(30, 0), 10, 1, 10, new Vector2(-1, 0)),
             };
             var initialStateWorld = new World(particles, new RigidWall[0], 0, 0);
             await _worldSimulator.RunWorldAsync(initialStateWorld, new SimulationParams(1000, 1, "test", 1));

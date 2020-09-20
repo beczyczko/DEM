@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Linq;
+using System.Numerics;
 using System.Threading.Tasks;
 using DEM.Engine;
 using DEM.Engine.Elements;
@@ -35,10 +36,10 @@ namespace DEM.Tests.Engine.BenchmarkWorlds
 
             var rigidWalls = new[]
             {
-                new RigidWall(new Point2d(-200, -200), new Point2d(250, -200)), //top
-                new RigidWall(new Point2d(250, -200), new Point2d(200, 200)), //right
-                new RigidWall(new Point2d(200, 200), new Point2d(-200, 200)), //bottom
-                new RigidWall(new Point2d(-200, 200), new Point2d(-200, -200)), //left
+                new RigidWall(new Vector2(-200, -200), new Vector2(250, -200)), //top
+                new RigidWall(new Vector2(250, -200), new Vector2(200, 200)), //right
+                new RigidWall(new Vector2(200, 200), new Vector2(-200, 200)), //bottom
+                new RigidWall(new Vector2(-200, 200), new Vector2(-200, -200)), //left
             };
             var world = new World(particles, rigidWalls, 0);
 
@@ -79,14 +80,14 @@ namespace DEM.Tests.Engine.BenchmarkWorlds
 
             var particles = new[]
             {
-                new Particle(new Point2d(-15F, 0), 10, 1, 200, new Vector2d(10, 0)),
-                new Particle(new Point2d(15F, 0), 10, 1, 200, new Vector2d(-10, 0)),
-                new Particle(new Point2d(-15F, 50), 10, 1, 200, new Vector2d(10, 0)),
+                new Particle(new Vector2(-15F, 0), 10, 1, 200, new Vector2(10, 0)),
+                new Particle(new Vector2(15F, 0), 10, 1, 200, new Vector2(-10, 0)),
+                new Particle(new Vector2(-15F, 50), 10, 1, 200, new Vector2(10, 0)),
 
             };
             var rigidWalls = new[]
             {
-                new RigidWall(new Point2d(0, 30), new Point2d(0, 70)),
+                new RigidWall(new Vector2(0, 30), new Vector2(0, 70)),
             };
             var world = new World(particles, rigidWalls, 0, 0);
 
@@ -98,7 +99,7 @@ namespace DEM.Tests.Engine.BenchmarkWorlds
         [InlineData(10, 0.01F, 5, 0.9F)]
         [InlineData(10, 0.005F, 10, 0.5F)]
         [InlineData(100, 0.001F, 20, 0.2F)]
-        // [InlineData(1000, 0.001F, 20, 0.01F)]
+        [InlineData(1000, 0.001F, 20, 0.01F)]
         public async Task Simulate_particles_collisions_tests(
             float time,
             float timeStep,
@@ -118,8 +119,8 @@ namespace DEM.Tests.Engine.BenchmarkWorlds
             await worldSimulator.RunWorldAsync(worldInitState, new SimulationParams(time, timeStep, simulationId, stepsPerSnapshot));
 
             var worldFinalState = worldSimulator.WorldTimeSteps.Last();
-            var particlesFinalVelocity = worldFinalState.Particles.Select(p => p.V.Scalar).ToArray();
-            var particlesInitVelocity = worldInitState.Particles.Select(p => p.V.Scalar).ToArray();
+            var particlesFinalVelocity = worldFinalState.Particles.Select(p => p.V.Length()).ToArray();
+            var particlesInitVelocity = worldInitState.Particles.Select(p => p.V.Length()).ToArray();
 
             for (int i = 0; i < particlesInitVelocity.Length; i++)
             {
