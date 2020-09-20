@@ -13,4 +13,10 @@
     <ProjectReference Include="..\DEM.Engine\DEM.Engine.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="particles_triangular_random.tsv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

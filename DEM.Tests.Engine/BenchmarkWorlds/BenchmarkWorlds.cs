@@ -99,7 +99,7 @@ namespace DEM.Tests.Engine.BenchmarkWorlds
         [InlineData(10, 0.01F, 5, 0.9F)]
         [InlineData(10, 0.005F, 10, 0.5F)]
         [InlineData(100, 0.001F, 20, 0.2F)]
-        [InlineData(1000, 0.001F, 20, 0.01F)]
+        // [InlineData(1000, 0.001F, 20, 0.01F)]
         public async Task Simulate_particles_collisions_tests(
             float time,
             float timeStep,
