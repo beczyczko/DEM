@@ -5,6 +5,7 @@ using DEM.Engine;
 using DEM.Engine.Elements;
 using DEM.Engine.Importers;
 using DEM.Engine.Persistence;
+using DEM.Engine.WorldSimulator;
 using FluentAssertions;
 using Xunit;
 
@@ -45,8 +46,9 @@ namespace DEM.Tests.Engine.BenchmarkWorlds
         }
 
         [Theory]
-        [InlineData(100, 0.1F, 1, 1)]
-        [InlineData(100, 0.1F, 1, 0.8)]
+        // [InlineData(100, 0.1F, 1, 1)]
+        // [InlineData(100, 0.1F, 1, 0.8)]
+        [InlineData(100, 0.05F, 2, 0.7)]
         // [InlineData(1000, 0.2F, 5, 0.2)]
         // [InlineData(1000, 0.05F, 5, 0.8)]
         // [InlineData(100, 0.01F, 10, 1)]
@@ -66,7 +68,7 @@ namespace DEM.Tests.Engine.BenchmarkWorlds
             DeleteSimulationSnapshotsFile(simulationId);
 
             var worldSimulator = new WorldSimulator(_fileWorldStateSaver);
-            await worldSimulator.RunWorldAsync(worldInitState, time, timeStep, simulationId, stepsPerSnapshot);
+            await worldSimulator.RunWorldAsync(worldInitState, new SimulationParams(time, timeStep, simulationId, stepsPerSnapshot));
         }
 
         [Fact]
@@ -113,7 +115,7 @@ namespace DEM.Tests.Engine.BenchmarkWorlds
             DeleteSimulationSnapshotsFile(simulationId);
 
             var worldSimulator = new WorldSimulator(_fileWorldStateSaver);
-            await worldSimulator.RunWorldAsync(worldInitState, time, timeStep, simulationId, stepsPerSnapshot);
+            await worldSimulator.RunWorldAsync(worldInitState, new SimulationParams(time, timeStep, simulationId, stepsPerSnapshot));
 
             var worldFinalState = worldSimulator.WorldTimeSteps.Last();
             var particlesFinalVelocity = worldFinalState.Particles.Select(p => p.V.Scalar).ToArray();
