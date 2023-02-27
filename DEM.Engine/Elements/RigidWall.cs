@@ -1,8 +1,9 @@
-﻿using System.Numerics;
+﻿using System;
+using System.Numerics;
 
 namespace DEM.Engine.Elements
 {
-    public readonly struct RigidWall : ICollidable
+    public readonly struct RigidWall : IBoundary, ICollidable
     {
         public RigidWall(Vector2 p1, Vector2 p2)
         {
@@ -17,5 +18,12 @@ namespace DEM.Engine.Elements
         {
             return CollisionSolver.CollisionSolver.CalculateCollisionForce(this, interactionElements);
         }
+
+        public Boundary Boundary => new Boundary(
+            Math.Min(P1.Y, P2.Y),
+            Math.Max(P1.Y, P2.Y),
+            Math.Min(P1.X, P2.X),
+            Math.Max(P1.X, P2.X)
+            );
     }
 }

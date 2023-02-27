@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using System;
+using System.Numerics;
 
 namespace DEM.Engine.Elements
 {
@@ -44,6 +45,32 @@ namespace DEM.Engine.Elements
             // m/s^2 * s = m/s
             var dV = new Vector2(0, gravity * timeStep);
             V += dV;
+        }
+
+        public Boundary Boundary => new Boundary(Position.Y - R, Position.Y + R, Position.X - R, Position.X + R);
+    }
+
+    public readonly struct Boundary
+    {
+        public Boundary(float top, float bottom, float left, float right)
+        {
+            Top = top;
+            Bottom = bottom;
+            Left = left;
+            Right = right;
+        }
+
+        public float Top { get; }
+        public float Bottom { get; }
+        public float Left { get; }
+        public float Right { get; }
+
+        public bool IsInside(Vector2 point)
+        {
+            return point.X >= Left
+                   && point.X <= Right
+                   && point.Y >= Top
+                   && point.Y <= Bottom;
         }
     }
 }

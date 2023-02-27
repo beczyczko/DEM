@@ -2,7 +2,7 @@
 
 namespace DEM.Engine.Elements
 {
-    public interface ICollidable
+    public interface ICollidable : IBoundary
     {
         Vector2 CalculateCollisionForce(ICollidable[] interactionElements);
     }
