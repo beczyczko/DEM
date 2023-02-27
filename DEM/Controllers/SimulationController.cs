@@ -35,14 +35,19 @@ namespace DEM.Controllers
         {
             var random = new Random();
             var particles = Enumerable.Range(0, 30)
-                .Select(i => new Particle(
-                    new Vector2(
+                .Select(i =>
+                {
+                    var velocity = new Vector2(NextFloat(random), NextFloat(random));
+                    var position = new Vector2(
                         random.Next(-100, 100),
-                        random.Next(-100, 100)),
-                    10,
-                    1,
-                    10,
-                    new Vector2(NextFloat(random), NextFloat(random))))
+                        random.Next(-100, 100));
+                    return new Particle(
+                        position,
+                        position - velocity,
+                        10,
+                        1,
+                        10);
+                })
                 .ToArray();
 
             var rigidWalls = new[]
@@ -52,7 +57,7 @@ namespace DEM.Controllers
                 new RigidWall(new Vector2(150, 200), new Vector2(-200, 200)), //bottom
                 new RigidWall(new Vector2(-200, 200), new Vector2(-200, -200)), //left
             };
-            var initialStateWorld = new World(particles, rigidWalls, 0);
+            var initialStateWorld = new World(particles, rigidWalls, 0, World.StandardGravity);
             await _worldSimulator.RunWorldAsync(initialStateWorld, new SimulationParams(1000, 1, "test", 1));
 
             return Ok(_worldSimulator.WorldTimeSteps);
@@ -63,11 +68,11 @@ namespace DEM.Controllers
         {
             var particles = new[]
             {
-                new Particle(new Vector2(-30, 0), 10, 1, 10, new Vector2(1, 0)),
-                new Particle(new Vector2(30, 0), 10, 1, 10, new Vector2(-1, 0)),
+                new Particle(new Vector2(-12, 0), new Vector2(-12.1f, 0), 10, 1, 10),
+                new Particle(new Vector2(12, 0), new Vector2(12.1f, 0), 10, 1, 10),
             };
-            var initialStateWorld = new World(particles, new RigidWall[0], 0, 0);
-            await _worldSimulator.RunWorldAsync(initialStateWorld, new SimulationParams(1000, 1, "test", 1));
+            var initialStateWorld = new World(particles, new RigidWall[0], 0, Vector2.Zero);
+            await _worldSimulator.RunWorldAsync(initialStateWorld, new SimulationParams(10, 0.1f, "test", 1));
 
             return Ok(_worldSimulator.WorldTimeSteps);
         }
@@ -89,7 +94,8 @@ namespace DEM.Controllers
                 return UnprocessableEntity("Init state file contains no valid world data");
             }
 
-            var simulationId = $"simulation_T_{simulationParams.Time}_TS_{simulationParams.TimeStep}_SPS_{simulationParams.StepsPerSnapshot}_BE_{simulationParams.ParticlesBounceEfficiencyFactor}";
+            var simulationId =
+                $"simulation_T_{simulationParams.Time}_TS_{simulationParams.TimeStep}_SPS_{simulationParams.StepsPerSnapshot}_BE_{simulationParams.ParticlesBounceEfficiencyFactor}";
 
             World.ParticlesBounceFactor = simulationParams.ParticlesBounceEfficiencyFactor; //todo db
 
@@ -103,7 +109,7 @@ namespace DEM.Controllers
 
             return Ok(new SimulationResult(simulationId));
         }
-        
+
         private static float NextFloat(Random random)
         {
             return ((float)random.NextDouble() * 2 - 1) * 1;

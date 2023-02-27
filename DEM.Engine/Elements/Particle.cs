@@ -1,32 +1,44 @@
-﻿using System;
-using System.Numerics;
+﻿using System.Numerics;
 
 namespace DEM.Engine.Elements
 {
     public struct Particle : ICollidable
     {
-        public Particle(Vector2 position, float r, float m, float k, Vector2 v)
+        public Particle(Vector2 position, Vector2 positionOld, float r, float m, float k)
         {
             Position = position;
+            PositionOld = positionOld;
             R = r;
             M = m;
             K = k;
-            V = v;
+            A = Vector2.Zero;
         }
 
         public Vector2 Position { get; set; }
+        public Vector2 PositionOld { get; set; }
         public float R { get; set; }
         public float M { get; set; }
+        public Vector2 A { get; set; }
 
         /// <summary>
         /// K - Spring Constant
         /// </summary>
         public float K { get; set; }
-        public Vector2 V { get; set; }
+
+        public Vector2 V => Position - PositionOld;
+
+        /// <summary>
+        /// Ek - Kinetic energy
+        /// </summary>
+        public float Ek => M * V.Length() * V.Length() / 2;
 
         public void Move(float timeStep)
         {
-            Position = new Vector2(Position.X + V.X * timeStep, Position.Y + V.Y * timeStep);
+            //todo db other Integration Methods
+            var v = V;
+            PositionOld = Position;
+            Position = Position + v + A * timeStep * timeStep; // Verlet Integration
+            A = Vector2.Zero;
         }
 
         public Vector2 CalculateCollisionForce(ICollidable[] interactionElements)
@@ -36,15 +48,7 @@ namespace DEM.Engine.Elements
 
         public void ApplyForce(Vector2 force, float timeStep)
         {
-            var dV = new Vector2(force.X * timeStep / M, force.Y * timeStep / M);
-            V += dV;
-        }
-
-        public void ApplyGravityForce(in float gravity, float timeStep)
-        {
-            // m/s^2 * s = m/s
-            var dV = new Vector2(0, gravity * timeStep);
-            V += dV;
+            A += force * timeStep / M;
         }
 
         public Boundary Boundary => new Boundary(Position.Y - R, Position.Y + R, Position.X - R, Position.X + R);

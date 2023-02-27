@@ -27,7 +27,9 @@ namespace DEM.Engine.Importers
             var k = float.Parse(values[8]);
             var Vx = float.Parse(values[9]);
             var Vy = float.Parse(values[10]);
-            var particle = new Particle(new Vector2(x, y), r, m, k, new Vector2(Vx, Vy));
+            var oldPosX = x - Vx;
+            var oldPosY = y - Vy;
+            var particle = new Particle(new Vector2(x, y), new Vector2(oldPosX, oldPosY), r, m, k);
             return particle;
         }
     }

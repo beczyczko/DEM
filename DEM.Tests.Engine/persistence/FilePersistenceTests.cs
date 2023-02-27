@@ -99,16 +99,21 @@ namespace DEM.Tests.Engine.persistence
         {
             var random = new Random();
             var particles = Enumerable.Range(0, particleCount)
-                .Select(i => new Particle(
-                    new Vector2(
+                .Select(i =>
+                {
+                    var position = new Vector2(
                         random.Next(-80, 80),
-                        random.Next(-80, 80)),
-                    5,
-                    1,
-                    20,
-                    new Vector2(random.Next(-2, 2), random.Next(-2, 2))))
+                        random.Next(-80, 80));
+                    var velocity = new Vector2(random.Next(-2, 2), random.Next(-2, 2));
+                    return new Particle(
+                        position,
+                        position - velocity,
+                        5,
+                        1,
+                        20);
+                })
                 .ToArray();
-            var world = new World(particles, new RigidWall[0], 0);
+            var world = new World(particles, new RigidWall[0], 0, World.StandardGravity);
             return world;
         }
 

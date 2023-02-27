@@ -18,7 +18,8 @@ namespace DEM.Tests.Engine
             Vector2 expectedCollisionForce)
         {
             var particleRigidWallCollisionSolver = new ParticleRigidWallCollisionSolver();
-            var closestPointOfWallToParticle = particleRigidWallCollisionSolver.ClosestPointOfWallToParticle(particle, rigidWall);
+            var closestPointOfWallToParticle =
+                particleRigidWallCollisionSolver.ClosestPointOfWallToParticle(particle, rigidWall);
             closestPointOfWallToParticle.Should().Be(expectedClosestPointOfWall);
             var calculateCollisionForce = particleRigidWallCollisionSolver.CalculateCollisionForce(particle, rigidWall);
             calculateCollisionForce.Should().Be(expectedCollisionForce);
@@ -29,45 +30,45 @@ namespace DEM.Tests.Engine
             {
                 new object[]
                 {
-                    new Particle(new Vector2(5, 0), 6, 1, 1, Vector2.Zero),
+                    new Particle(new Vector2(5, 0), new Vector2(5, 0), 6, 1, 1),
                     new RigidWall(new Vector2(0, 10), new Vector2(0, -10)),
-                    new Vector2(0,0),
+                    new Vector2(0, 0),
                     new Vector2(1, 0),
                 },
                 new object[]
                 {
-                    new Particle(new Vector2(-4, 4), 4, 1, 1, Vector2.Zero),
+                    new Particle(new Vector2(-4, 4), new Vector2(-4, 4), 4, 1, 1),
                     new RigidWall(new Vector2(10, 10), new Vector2(-10, -10)),
-                    new Vector2(0,0),
+                    new Vector2(0, 0),
                     new Vector2(0, 0),
                 },
                 new object[]
                 {
-                    new Particle(new Vector2(-1, 1), 2, 1, 1, Vector2.Zero),
+                    new Particle(new Vector2(-1, 1), new Vector2(-1, 1), 2, 1, 1),
                     new RigidWall(new Vector2(10, 10), new Vector2(-10, -10)),
-                    new Vector2(0,0),
+                    new Vector2(0, 0),
                     new Vector2(-0.4142136F, 0.4142136F),
                 },
                 new object[] //point on the line
                 {
-                    new Particle(new Vector2(0, 0), 1, 1, 1, Vector2.Zero),
+                    new Particle(new Vector2(0, 0), new Vector2(0, 0), 1, 1, 1),
                     new RigidWall(new Vector2(10, 10), new Vector2(-10, -10)),
-                    new Vector2(0,0),
-                    new Vector2(0,0),
+                    new Vector2(0, 0),
+                    new Vector2(0, 0),
                 },
                 new object[] //point on the line
                 {
-                    new Particle(new Vector2(5, 5), 1, 1, 1, Vector2.Zero),
+                    new Particle(new Vector2(5, 5), new Vector2(5, 5), 1, 1, 1),
                     new RigidWall(new Vector2(10, 10), new Vector2(-10, -10)),
-                    new Vector2(5,5),
-                    new Vector2(0,0),
+                    new Vector2(5, 5),
+                    new Vector2(0, 0),
                 },
                 new object[] //point on the line
                 {
-                    new Particle(new Vector2(10, 10), 1, 1, 1, Vector2.Zero),
+                    new Particle(new Vector2(10, 10), new Vector2(10, 10), 1, 1, 1),
                     new RigidWall(new Vector2(10, 10), new Vector2(-10, -10)),
-                    new Vector2(10,10),
-                    new Vector2(0,0),
+                    new Vector2(10, 10),
+                    new Vector2(0, 0),
                 },
                 //todo db test case where mass is diffrent than 1
                 //todo db test case where mass is diffrent than 1

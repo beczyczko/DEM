@@ -44,8 +44,8 @@ namespace DEM.Benchmarks
     public class ParticleParticleCollisionSolverBenchmark
     {
         private readonly ParticleParticleCollisionSolver _particleParticleCollisionSolver = new ParticleParticleCollisionSolver();
-        private readonly Particle _particle1 = new Particle(new Vector2(2, 3), 5, 1, 200, Vector2.One);
-        private readonly Particle _particle2 = new Particle(new Vector2(3, 5), 5, 1, 200, Vector2.UnitX);
+        private readonly Particle _particle1 = new Particle(new Vector2(2, 3), new Vector2(1, 2), 5, 1, 200);
+        private readonly Particle _particle2 = new Particle(new Vector2(3, 5), new Vector2(2, 5), 5, 1, 200);
 
         [Benchmark]
         public void CalculateCollisionForce()
@@ -59,7 +59,7 @@ namespace DEM.Benchmarks
     [RankColumn]
     public class CollisionSolverBenchmark
     {
-        private readonly Particle _particle1 = new Particle(new Vector2(50, 50), 25, 1, 200, new Vector2(-2, 3));
+        private readonly Particle _particle1 = new Particle(new Vector2(50, 50), new Vector2(52, 47), 25, 1, 200);
 
         private ICollidable[] _particles;
 

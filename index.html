@@ -46,12 +46,13 @@ Simulation id <input type="text" id="simulation-id" accept=".dem"/>
         ctx.stroke();
     }
 
-    function drawStats(actualTime, actualStep) {
+    function drawStats(actualTime, actualStep, ekSum) {
         ctx.fillStyle = "#FF0000";
         ctx.beginPath();
         ctx.font = "20px Arial";
         ctx.fillText(`Actual time: ${actualTime}`, 10, 30);
         ctx.fillText(`Frame: ${actualStep}`, 10, 60);
+        ctx.fillText(`Ek Sum: ${ekSum}`, 10, 90);
         ctx.stroke();
     }
 
@@ -63,7 +64,7 @@ Simulation id <input type="text" id="simulation-id" accept=".dem"/>
         const timeState = timeStates[stepNo];
         const particles = timeState.particles;
 
-        drawStats(timeState.currentTime, actualStep);
+        drawStats(timeState.currentTime, actualStep, timeState.ek);
 
         for (let j = 0; j < particles.length; j++) {
             drawParticle(particles[j]);

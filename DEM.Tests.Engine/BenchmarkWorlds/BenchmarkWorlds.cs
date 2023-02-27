@@ -41,7 +41,7 @@ namespace DEM.Tests.Engine.BenchmarkWorlds
                 new RigidWall(new Vector2(200, 200), new Vector2(-200, 200)), //bottom
                 new RigidWall(new Vector2(-200, 200), new Vector2(-200, -200)), //left
             };
-            var world = new World(particles, rigidWalls, 0);
+            var world = new World(particles, rigidWalls, 0, World.StandardGravity);
 
             await _fileWorldStateSaver.SaveAsync(world, simulationId);
         }
@@ -65,11 +65,13 @@ namespace DEM.Tests.Engine.BenchmarkWorlds
             var fileWorldStateLoader = new FileWorldStateLoader(_filePathBuilder);
             var worldInitState = fileWorldStateLoader.First(simulationInitStateId);
 
-            var simulationId = $"particles_triangular_random_T_{time}_TS_{timeStep}_SPS_{stepsPerSnapshot}_BE_{particlesBounceEfficiencyFactor}";
+            var simulationId =
+                $"particles_triangular_random_T_{time}_TS_{timeStep}_SPS_{stepsPerSnapshot}_BE_{particlesBounceEfficiencyFactor}";
             DeleteSimulationSnapshotsFile(simulationId);
 
             var worldSimulator = new WorldSimulator(_fileWorldStateSaver);
-            await worldSimulator.RunWorldAsync(worldInitState, new SimulationParams(time, timeStep, simulationId, stepsPerSnapshot));
+            await worldSimulator.RunWorldAsync(worldInitState,
+                new SimulationParams(time, timeStep, simulationId, stepsPerSnapshot));
         }
 
         [Fact]
@@ -80,16 +82,15 @@ namespace DEM.Tests.Engine.BenchmarkWorlds
 
             var particles = new[]
             {
-                new Particle(new Vector2(-15F, 0), 10, 1, 200, new Vector2(10, 0)),
-                new Particle(new Vector2(15F, 0), 10, 1, 200, new Vector2(-10, 0)),
-                new Particle(new Vector2(-15F, 50), 10, 1, 200, new Vector2(10, 0)),
-
+                new Particle(new Vector2(-15F, 0), new Vector2(-25F, 0), 10, 1, 200),
+                new Particle(new Vector2(15F, 0), new Vector2(25F, 0), 10, 1, 200),
+                new Particle(new Vector2(-15F, 50), new Vector2(-25F, 50), 10, 1, 200),
             };
             var rigidWalls = new[]
             {
                 new RigidWall(new Vector2(0, 30), new Vector2(0, 70)),
             };
-            var world = new World(particles, rigidWalls, 0, 0);
+            var world = new World(particles, rigidWalls, 0, Vector2.Zero);
 
             await _fileWorldStateSaver.SaveAsync(world, simulationId);
         }
@@ -112,11 +113,13 @@ namespace DEM.Tests.Engine.BenchmarkWorlds
             var fileWorldStateLoader = new FileWorldStateLoader(_filePathBuilder);
             var worldInitState = fileWorldStateLoader.First(simulationInitStateId);
 
-            var simulationId = $"particles_collisions_test_T_{time}_TS_{timeStep}_SPS_{stepsPerSnapshot}_BE_{particlesBounceEfficiencyFactor}";
+            var simulationId =
+                $"particles_collisions_test_T_{time}_TS_{timeStep}_SPS_{stepsPerSnapshot}_BE_{particlesBounceEfficiencyFactor}";
             DeleteSimulationSnapshotsFile(simulationId);
 
             var worldSimulator = new WorldSimulator(_fileWorldStateSaver);
-            await worldSimulator.RunWorldAsync(worldInitState, new SimulationParams(time, timeStep, simulationId, stepsPerSnapshot));
+            await worldSimulator.RunWorldAsync(worldInitState,
+                new SimulationParams(time, timeStep, simulationId, stepsPerSnapshot));
 
             var worldFinalState = worldSimulator.WorldTimeSteps.Last();
             var particlesFinalVelocity = worldFinalState.Particles.Select(p => p.V.Length()).ToArray();
@@ -127,7 +130,7 @@ namespace DEM.Tests.Engine.BenchmarkWorlds
                 particlesFinalVelocity[i].Should().BeInRange(
                     particlesInitVelocity[i] * particlesBounceEfficiencyFactor / 1.01F,
                     particlesInitVelocity[i] * particlesBounceEfficiencyFactor * 1.01F
-                    );
+                );
             }
         }
 
