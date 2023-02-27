@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using DEM.Engine.Elements;
@@ -9,9 +8,9 @@ namespace DEM.Engine
     public class World
     {
         public static float ParticlesBounceFactor = 1; //todo db make it not static
-        public static Vector2 StandardGravity = Vector2.UnitY * 0.0981f;
+        public static readonly Vector2 StandardGravity = Vector2.UnitY * 0.0981f;
 
-        public float CurrentTime { get; }
+        public float CurrentTime { get; private set; }
         public Vector2 Gravity { get; }
         public Particle[] Particles { get; }
         public RigidWall[] RigidWalls { get; }
@@ -31,7 +30,7 @@ namespace DEM.Engine
 
         public World ProcessNextStep(float timeStep)
         {
-            var currentParticles = Particles;
+            CurrentTime += timeStep;
 
             ////////////////////////
             // var elementsToSectionsGrouper = new ElementsToSectionsGrouper();
@@ -45,26 +44,20 @@ namespace DEM.Engine
             // GetDistinctCollisions(groupElementsIntoSections);
             ////////////////////////
 
-
-            var particlesNewState = currentParticles.ToArray(); //copy
-
-            var restoringForces = RestoringForceCalc(currentParticles, RigidWalls);
+            var restoringForces = RestoringForceCalc(Particles, RigidWalls);
             //todo db Cohesion - particles <--> particle
             //todo db Cohesion - rigid line <--> particle
 
-            ApplyForcesToParticles(ref particlesNewState, restoringForces, timeStep);
+            ApplyForcesToParticles(restoringForces, timeStep);
 
             if (Gravity != Vector2.Zero)
             {
-                ApplyGravityForcesToParticles(ref particlesNewState, timeStep);
+                ApplyGravityForcesToParticles(timeStep);
             }
 
-            MoveParticles(ref particlesNewState, timeStep);
+            MoveParticles(timeStep);
 
-            var rigidWallsNewState = RigidWalls.ToArray(); //copy
-
-            var worldSnapshot = new World(particlesNewState, rigidWallsNewState, CurrentTime + timeStep, Gravity);
-            return worldSnapshot;
+            return this;
         }
 
         private List<(ICollidable element1, ICollidable element2)> GetDistinctCollisions(
@@ -95,19 +88,19 @@ namespace DEM.Engine
             return distinctCollisions;
         }
 
-        private void ApplyForcesToParticles(ref Particle[] particles, Vector2[] forces, float timeStep)
+        private void ApplyForcesToParticles(Vector2[] forces, float timeStep)
         {
-            for (int i = 0; i < particles.Length; i++)
+            for (var i = 0; i < Particles.Length; i++)
             {
-                particles[i].ApplyForce(forces[i], timeStep);
+                Particles[i].ApplyForce(forces[i], timeStep);
             }
         }
 
-        private void ApplyGravityForcesToParticles(ref Particle[] particles, float timeStep)
+        private void ApplyGravityForcesToParticles(float timeStep)
         {
-            for (int i = 0; i < particles.Length; i++)
+            for (var i = 0; i < Particles.Length; i++)
             {
-                particles[i].ApplyForce(Gravity, timeStep);
+                Particles[i].ApplyForce(Gravity, timeStep);
             }
         }
 
@@ -127,11 +120,11 @@ namespace DEM.Engine
             return forces;
         }
 
-        private void MoveParticles(ref Particle[] particles, float timeStep)
+        private void MoveParticles(float timeStep)
         {
-            for (var i = 0; i < particles.Length; i++)
+            for (var i = 0; i < Particles.Length; i++)
             {
-                particles[i].Move(timeStep);
+                Particles[i].Move(timeStep);
             }
         }
     }

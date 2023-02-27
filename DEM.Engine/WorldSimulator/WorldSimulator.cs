@@ -38,7 +38,7 @@ namespace DEM.Engine.WorldSimulator
 
         private async Task SaveStateAsync(World snapshot, string simulationId)
         {
-            WorldTimeSteps.Add(snapshot);
+            WorldTimeSteps.Add(snapshot); // todo db there is always the same instance of World object, so it will be needed to create copy to maintain this functionality
             await _stateSaver.SaveAsync(snapshot, simulationId);
         }
     }
